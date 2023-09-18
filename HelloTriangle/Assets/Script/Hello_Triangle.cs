@@ -5,12 +5,13 @@ using UnityEngine;
 public class Hello_Triangle : MonoBehaviour
 {
     public Material mat;
+    public List<Vector3> tabVector = new List<Vector3>();
 
     // Use this for initialization
     void Start()
     {
-        /*//Dessiner un triangle
-        gameObject.AddComponent<MeshFilter>();          // Creation d'un composant MeshFilter qui peut ensuite être visualisé
+        //Dessiner un triangle VERSION 1
+        /*gameObject.AddComponent<MeshFilter>();          // Creation d'un composant MeshFilter qui peut ensuite être visualisé
         gameObject.AddComponent<MeshRenderer>();
 
         Vector3[] vertices = new Vector3[3];            // Création des structures de données qui accueilleront sommets et  triangles
@@ -34,7 +35,10 @@ public class Hello_Triangle : MonoBehaviour
         gameObject.GetComponent<MeshFilter>().mesh = msh;           // Remplissage du Mesh et ajout du matériel
         gameObject.GetComponent<MeshRenderer>().material = mat;*/
 
-        gameObject.AddComponent<MeshFilter>();
+
+
+        //Dessiner 2 triangles (pas ensemble) VERSION 2
+        /*gameObject.AddComponent<MeshFilter>();
         gameObject.AddComponent<MeshRenderer>();
 
         Vector3 x = new Vector3(0, 0, 0);
@@ -52,9 +56,29 @@ public class Hello_Triangle : MonoBehaviour
 
         Triangle t2 = new Triangle(x2, y2, z2);
         t2.createTriangle(this.gameObject, t2.vertices, t2.triangles, mat);
+        //1er ne s'affiche pas quand le 2eme est décommenté*/
 
-        //1er ne s'affiche pas quand le 2eme est décommenté
+
+
+        //Dessiner mur triangles
+        //Créer Mur de points
+        PointsGrid(2, 1);
+
     }
+
+    public void PointsGrid(int longueur, int largeur)
+    {
+        for (int i = 0; i < longueur; i++)
+        {
+            for (int j = 0; j < largeur; j++)
+            {
+                Vector3 v = new Vector3(i, j, 0);
+                tabVector.Add(v); //index tab = num du point
+            }
+        }
+    }
+
+
 }
 
 
