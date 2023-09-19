@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Hello_Triangle : MonoBehaviour
 {
-    public Material mat;
-    public List<Vector3> tabVector = new List<Vector3>();
+    public Material material;
+    private List<Vector3> tabVector = new List<Vector3>();
     public int widthGrid;
     public int heightGrid;
-    public int numberTriangles;
+    private int numberTriangles;
 
     // Use this for initialization
     void Start()
@@ -72,28 +72,57 @@ public class Hello_Triangle : MonoBehaviour
         //Créer Mur de points
         widthGrid = 5;
         heightGrid = 2;
-        PointsGrid(widthGrid, heightGrid);
+        tabVector = PointsGrid(widthGrid, heightGrid);
 
         //Créer un triangle à partir de 3 points de la grille
-        //nombre de triangle = (longueur-1) * (largeur-1) * 2
+        numberTriangles = (widthGrid - 1) * (heightGrid - 1) * 2;
+
+        for (int i = 1; i <= numberTriangles; i++)
+        {
+            int lineNumber = 0;
+            /*if(numberTriangles%2 == 0) //triangle du haut
+            {
+
+            }
+            else //triangle du bas
+            {
+
+            }
+           */
+
+            for (int point = 1; point < tabVector.Count; point++)
+            {
+                //mettre vérification triangles ici
+                if (point + 1 <= widthGrid) //tant que l'on a pas atteint le bout de la grille
+                {
+                    Debug.Log(point);
+                    Triangle t = new Triangle(tabVector[point], tabVector[point + 1], tabVector[widthGrid * lineNumber + (point % widthGrid)], true);
+                    t.createTriangle(this.gameObject, t.vertices, t.triangles, material);
+                }
+                
+            }
+            
+        }
 
         //Dessiner les triangles
         //createTriangle();
 
     }
 
-    public List<Vector3> PointsGrid(int longueur, int largeur)
+    public List<Vector3> PointsGrid(int width, int height)
     {
-        for (int i = 1; i <= largeur; i++)
+        List<Vector3> tab = new List<Vector3>();
+
+        for (int i = 1; i <= height; i++)
         {
-            for (int j = 1; j <= longueur; j++)
+            for (int j = 1; j <= width; j++)
             {
                 Vector3 v = new Vector3(i, j, 0); //création point de la grille
-                tabVector.Add(v); //index tab = num du point
-                Debug.Log("Point " + tabVector.IndexOf(v) + " : x = " + i + "     y = " + j); 
+                tab.Add(v); //index tab = num du point
+                //Debug.Log("Point " + tabVector.IndexOf(v) + " : x = " + i + "     y = " + j); 
             }
         }
-        return tabVector;
+        return tab;
     }
 
 
@@ -140,6 +169,7 @@ public class Triangle
     {
         Mesh msh = new Mesh();
 
+        //tout ça doit s'exécuter pour tous les triangles d'un coup (un seul draw)
         msh.vertices = v;
         msh.triangles = s;
 
