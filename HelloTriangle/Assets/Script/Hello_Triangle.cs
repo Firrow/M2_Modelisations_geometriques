@@ -6,6 +6,9 @@ public class Hello_Triangle : MonoBehaviour
 {
     public Material mat;
     public List<Vector3> tabVector = new List<Vector3>();
+    public int widthGrid;
+    public int heightGrid;
+    public int numberTriangles;
 
     // Use this for initialization
     void Start()
@@ -58,24 +61,39 @@ public class Hello_Triangle : MonoBehaviour
         t2.createTriangle(this.gameObject, t2.vertices, t2.triangles, mat);
         //1er ne s'affiche pas quand le 2eme est décommenté*/
 
+        //PEUT ÊTRE UTILE
+        //longueur * j + i : permet d'avoir indice élément de chaque ligne
 
 
-        //Dessiner mur triangles
+
+
+        //Dessiner mur triangles---------------------------------------------
+
         //Créer Mur de points
-        PointsGrid(2, 1);
+        widthGrid = 5;
+        heightGrid = 2;
+        PointsGrid(widthGrid, heightGrid);
+
+        //Créer un triangle à partir de 3 points de la grille
+        //nombre de triangle = (longueur-1) * (largeur-1) * 2
+
+        //Dessiner les triangles
+        //createTriangle();
 
     }
 
-    public void PointsGrid(int longueur, int largeur)
+    public List<Vector3> PointsGrid(int longueur, int largeur)
     {
-        for (int i = 0; i < longueur; i++)
+        for (int i = 1; i <= largeur; i++)
         {
-            for (int j = 0; j < largeur; j++)
+            for (int j = 1; j <= longueur; j++)
             {
-                Vector3 v = new Vector3(i, j, 0);
+                Vector3 v = new Vector3(i, j, 0); //création point de la grille
                 tabVector.Add(v); //index tab = num du point
+                Debug.Log("Point " + tabVector.IndexOf(v) + " : x = " + i + "     y = " + j); 
             }
         }
+        return tabVector;
     }
 
 
@@ -92,16 +110,26 @@ public class Triangle
     public Vector3[] vertices = new Vector3[3];
     public int[] triangles = new int[3];
 
-    public Triangle(Vector3 s1, Vector3 s2 , Vector3 s3) //Problème avec constructeur et les vertices (n'existent pas)
+    public Triangle(Vector3 s1, Vector3 s2 , Vector3 s3, bool triangleDirection) //Problème avec constructeur et les vertices (n'existent pas)
     {
         this.x = s1;
         this.y = s2;
         this.z = s3;
 
         //Attention initialiser sommets avant vertices
-        this.triangles[0] = 0;
-        this.triangles[1] = 1;
-        this.triangles[2] = 2;
+        //Permet de dessiner les 2 types de triangles (voir carnet pour correspondance sommet/index)
+        if(triangleDirection == true)
+        {
+            this.triangles[0] = 0;
+            this.triangles[1] = 1;
+            this.triangles[2] = 2;
+        }
+        else
+        {
+            this.triangles[0] = 2;
+            this.triangles[1] = 1;
+            this.triangles[2] = 0;
+        }
 
         this.vertices[0] = x;
         this.vertices[1] = y;
