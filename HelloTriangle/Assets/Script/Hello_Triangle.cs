@@ -5,10 +5,16 @@ using UnityEngine;
 public class Hello_Triangle : MonoBehaviour
 {
     public Material material;
-    private List<Vector3> tabVector = new List<Vector3>();
     public int widthGrid;
     public int heightGrid;
+
+    private List<Vector3> grid = new List<Vector3>();
     private int numberTriangles;
+    //private ArrayList allVerticesList = new ArrayList();
+    //private ArrayList allSommetsList = new ArrayList();
+    private Vector3[] allVertices;
+    private Vector3[] allSommets;
+
 
     // Use this for initialization
     void Start()
@@ -71,15 +77,14 @@ public class Hello_Triangle : MonoBehaviour
 
         //Créer Mur de points
         widthGrid = 5;
-        heightGrid = 2;
-        tabVector = PointsGrid(widthGrid, heightGrid);
+        heightGrid = 2; //doit être différent de 1 !
+        grid = PointsGrid(widthGrid, heightGrid);
 
         //Créer un triangle à partir de 3 points de la grille
-        numberTriangles = (widthGrid - 1) * (heightGrid - 1) * 2;
+        //numberTriangles = (widthGrid - 1) * (heightGrid - 1) * 2;
 
-        for (int i = 1; i <= numberTriangles; i++)
-        {
-            int lineNumber = 0;
+
+        int lineNumber = 1;
             /*if(numberTriangles%2 == 0) //triangle du haut
             {
 
@@ -90,24 +95,36 @@ public class Hello_Triangle : MonoBehaviour
             }
            */
 
-            for (int point = 1; point < tabVector.Count; point++)
+        for (int point = 1; point <= grid.Count/2; point++)
+        {
+            //mettre vérification triangles ici
+            if (point <= widthGrid * lineNumber) //tant que l'on a pas atteint le bout de la grille
             {
-                //mettre vérification triangles ici
-                if (point + 1 <= widthGrid) //tant que l'on a pas atteint le bout de la grille
-                {
-                    Debug.Log(point);
-                    Triangle t = new Triangle(tabVector[point], tabVector[point + 1], tabVector[widthGrid * lineNumber + (point % widthGrid)], true);
-                    t.createTriangle(this.gameObject, t.vertices, t.triangles, material);
-                }
-                
+                Debug.Log(point);
             }
-            
+            else
+            {
+                lineNumber++;
+                Debug.Log("Ligne finie !");
+            }
+
+            Debug.Log("creation triangle");
+            Triangle t = new Triangle(grid[point], grid[point + 1], grid[widthGrid * lineNumber + (point % widthGrid)], true); //ici on créer vertice par 3 (tableau composé de vecteur)
+            //ajouter toutes les vertices(vector3) à une liste
+            /*allVerticesList.Add(t.vertices);
+            allSommetsList.Add(t.triangles);*/
+
+
         }
 
-        //Dessiner les triangles
-        //createTriangle();
 
+        //créer le mesh
+        //createMesh(allVertices, allSommets);
+        //Dessiner le mesh
+        //drawTriangle(this.gameObject, material);
     }
+
+
 
     public List<Vector3> PointsGrid(int width, int height)
     {
@@ -118,14 +135,34 @@ public class Hello_Triangle : MonoBehaviour
             for (int j = 1; j <= width; j++)
             {
                 Vector3 v = new Vector3(i, j, 0); //création point de la grille
-                tab.Add(v); //index tab = num du point
+                tab.Add(v); //index tab = num du point 
                 //Debug.Log("Point " + tabVector.IndexOf(v) + " : x = " + i + "     y = " + j); 
             }
         }
         return tab;
     }
 
+    public Mesh createMesh(Vector3[] v, int[] s)
+    {
+        //doit dessiner un seul et unique mesh
+        Mesh msh = new Mesh();
 
+        msh.vertices = v;
+        msh.triangles = s;
+
+        return msh;
+    }
+
+    public void drawTriangle(GameObject go, List<Mesh> tabMesh, Material mat)
+    {
+        foreach (Mesh mesh in tabMesh)
+        {
+            //draw
+            Debug.Log("dessine");
+            go.GetComponent<MeshFilter>().mesh = mesh;
+            go.GetComponent<MeshRenderer>().material = mat;
+        }
+    }
 }
 
 
@@ -163,17 +200,5 @@ public class Triangle
         this.vertices[0] = x;
         this.vertices[1] = y;
         this.vertices[2] = z;
-    }
-
-    public void createTriangle(GameObject go, Vector3[] v, int[] s, Material mat)
-    {
-        Mesh msh = new Mesh();
-
-        //tout ça doit s'exécuter pour tous les triangles d'un coup (un seul draw)
-        msh.vertices = v;
-        msh.triangles = s;
-
-        go.GetComponent<MeshFilter>().mesh = msh; 
-        go.GetComponent<MeshRenderer>().material = mat;
     }
 }
