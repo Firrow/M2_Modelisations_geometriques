@@ -4,37 +4,79 @@ using UnityEngine;
 
 public class Hello_Triangle : MonoBehaviour
 {
+    public int width;
+    public int height;
     public Material material;
-    public int widthGrid;
-    public int heightGrid;
 
-    private List<Vector3> grid = new List<Vector3>();
-    private int numberTriangles;
-    //private ArrayList allVerticesList = new ArrayList();
-    //private ArrayList allSommetsList = new ArrayList();
-    private Vector3[] allVertices;
-    private Vector3[] allSommets;
-
-
-    // Use this for initialization
     void Start()
     {
-        //Dessiner un triangle VERSION 1
-        /*gameObject.AddComponent<MeshFilter>();          // Creation d'un composant MeshFilter qui peut ensuite être visualisé
+        List<Vector3> triangles = new List<Vector3>();
+        Vector3[] vertices = new Vector3[width * height];
+
+        //création grille
+        for (int j = 0; j < height; j++)
+        {
+            for (int i = 0; i < width; i++)
+            {
+                if ((j < (height - 1)) && (i < (width - 1)))
+                {
+                    triangles.Add(new Vector3(width * j + i, width * j + i + 1, width * (j + 1) + i));
+                    triangles.Add(new Vector3(width * j + i + 1, width * (j + 1) + i + 1, width * (j + 1) + i));
+                }
+
+                vertices[i + width * j] = new Vector3(i, j, 0);
+            }
+        }
+
+
+        Mesh msh = new Mesh();
+
+        gameObject.AddComponent<MeshFilter>();          // Creation d'un composant MeshFilter qui peut ensuite être visualisé
         gameObject.AddComponent<MeshRenderer>();
 
-        Vector3[] vertices = new Vector3[3];            // Création des structures de données qui accueilleront sommets et  triangles
-        int[] triangles = new int[3];
+        msh.vertices = vertices;
+
+        int triangleTabSize = triangles.Count * 3;
+        int[] triangleTab = new int[triangleTabSize];
+        for (int i = 0; i < triangles.Count; i++)
+        {
+            triangleTab[i * 3] = (int)triangles[i][0];
+            triangleTab[i * 3 + 1] = (int)triangles[i][1];
+            triangleTab[i * 3 + 2] = (int)triangles[i][2];
+        }
+
+        msh.triangles = triangleTab;
+
+        gameObject.GetComponent<MeshFilter>().mesh = msh;           // Remplissage du Mesh et ajout du matériel
+        gameObject.GetComponent<MeshRenderer>().material = material;
+    }
+
+
+
+    public void triangleProf()
+    {
+        //Dessiner un triangle VERSION 1
+        gameObject.AddComponent<MeshFilter>();          // Creation d'un composant MeshFilter qui peut ensuite être visualisé
+        gameObject.AddComponent<MeshRenderer>();
+
+        Vector3[] vertices = new Vector3[6];            // Création des structures de données qui accueilleront sommets et  triangles
+        int[] triangles = new int[6];
 
 
         vertices[0] = new Vector3(0, 0, 0);            // Remplissage de la structure sommet 
         vertices[1] = new Vector3(1, 0, 0);
         vertices[2] = new Vector3(0, 1, 0);
+        vertices[3] = new Vector3(1, 0, 0);            // Remplissage de la structure sommet 
+        vertices[4] = new Vector3(2, 0, 0);
+        vertices[5] = new Vector3(1, 1, 0);
 
 
         triangles[0] = 0;                               // Remplissage de la structure triangle. Les sommets sont représentés par leurs indices
         triangles[1] = 1;                               // les triangles sont représentés par trois indices (et sont mis bout à bout)
         triangles[2] = 2;
+        triangles[3] = 3;                               // Remplissage de la structure triangle. Les sommets sont représentés par leurs indices
+        triangles[4] = 4;                               // les triangles sont représentés par trois indices (et sont mis bout à bout)
+        triangles[5] = 5;
 
         Mesh msh = new Mesh();                          // Création et remplissage du Mesh
 
@@ -42,163 +84,6 @@ public class Hello_Triangle : MonoBehaviour
         msh.triangles = triangles;
 
         gameObject.GetComponent<MeshFilter>().mesh = msh;           // Remplissage du Mesh et ajout du matériel
-        gameObject.GetComponent<MeshRenderer>().material = mat;*/
-
-
-
-        //Dessiner 2 triangles (pas ensemble) VERSION 2
-        /*gameObject.AddComponent<MeshFilter>();
-        gameObject.AddComponent<MeshRenderer>();
-
-        Vector3 x = new Vector3(0, 0, 0);
-        Vector3 y = new Vector3(1, 0, 0);
-        Vector3 z = new Vector3(0, 1, 0);
-
-        Triangle t = new Triangle(x, y, z);
-        t.createTriangle(this.gameObject, t.vertices, t.triangles, mat);
-
-
-
-        Vector3 x2 = new Vector3(0, 1, 1);
-        Vector3 y2 = new Vector3(0, 0, 1);
-        Vector3 z2 = new Vector3(0, 1, 0);
-
-        Triangle t2 = new Triangle(x2, y2, z2);
-        t2.createTriangle(this.gameObject, t2.vertices, t2.triangles, mat);
-        //1er ne s'affiche pas quand le 2eme est décommenté*/
-
-        //PEUT ÊTRE UTILE
-        //longueur * j + i : permet d'avoir indice élément de chaque ligne
-
-
-
-
-        //Dessiner mur triangles---------------------------------------------
-
-        //Créer Mur de points
-        widthGrid = 5;
-        heightGrid = 2; //doit être différent de 1 !
-        grid = PointsGrid(widthGrid, heightGrid);
-
-        //Créer un triangle à partir de 3 points de la grille
-        //numberTriangles = (widthGrid - 1) * (heightGrid - 1) * 2;
-
-
-        int lineNumber = 1;
-            /*if(numberTriangles%2 == 0) //triangle du haut
-            {
-
-            }
-            else //triangle du bas
-            {
-
-            }
-           */
-
-        for (int point = 1; point <= grid.Count/2; point++)
-        {
-            //mettre vérification triangles ici
-            if (point <= widthGrid * lineNumber) //tant que l'on a pas atteint le bout de la grille
-            {
-                Debug.Log(point);
-            }
-            else
-            {
-                lineNumber++;
-                Debug.Log("Ligne finie !");
-            }
-
-            Debug.Log("creation triangle");
-            Triangle t = new Triangle(grid[point], grid[point + 1], grid[widthGrid * lineNumber + (point % widthGrid)], true); //ici on créer vertice par 3 (tableau composé de vecteur)
-            //ajouter toutes les vertices(vector3) à une liste
-            /*allVerticesList.Add(t.vertices);
-            allSommetsList.Add(t.triangles);*/
-
-
-        }
-
-
-        //créer le mesh
-        //createMesh(allVertices, allSommets);
-        //Dessiner le mesh
-        //drawTriangle(this.gameObject, material);
-    }
-
-
-
-    public List<Vector3> PointsGrid(int width, int height)
-    {
-        List<Vector3> tab = new List<Vector3>();
-
-        for (int i = 1; i <= height; i++)
-        {
-            for (int j = 1; j <= width; j++)
-            {
-                Vector3 v = new Vector3(i, j, 0); //création point de la grille
-                tab.Add(v); //index tab = num du point 
-                //Debug.Log("Point " + tabVector.IndexOf(v) + " : x = " + i + "     y = " + j); 
-            }
-        }
-        return tab;
-    }
-
-    public Mesh createMesh(Vector3[] v, int[] s)
-    {
-        //doit dessiner un seul et unique mesh
-        Mesh msh = new Mesh();
-
-        msh.vertices = v;
-        msh.triangles = s;
-
-        return msh;
-    }
-
-    public void drawTriangle(GameObject go, List<Mesh> tabMesh, Material mat)
-    {
-        foreach (Mesh mesh in tabMesh)
-        {
-            //draw
-            Debug.Log("dessine");
-            go.GetComponent<MeshFilter>().mesh = mesh;
-            go.GetComponent<MeshRenderer>().material = mat;
-        }
-    }
-}
-
-
-
-public class Triangle
-{
-    public Vector3 x;
-    public Vector3 y;
-    public Vector3 z;
-
-    public Vector3[] vertices = new Vector3[3];
-    public int[] triangles = new int[3];
-
-    public Triangle(Vector3 s1, Vector3 s2 , Vector3 s3, bool triangleDirection) //Problème avec constructeur et les vertices (n'existent pas)
-    {
-        this.x = s1;
-        this.y = s2;
-        this.z = s3;
-
-        //Attention initialiser sommets avant vertices
-        //Permet de dessiner les 2 types de triangles (voir carnet pour correspondance sommet/index)
-        if(triangleDirection == true)
-        {
-            this.triangles[0] = 0;
-            this.triangles[1] = 1;
-            this.triangles[2] = 2;
-        }
-        else
-        {
-            this.triangles[0] = 2;
-            this.triangles[1] = 1;
-            this.triangles[2] = 0;
-        }
-
-        this.vertices[0] = x;
-        this.vertices[1] = y;
-        this.vertices[2] = z;
+        gameObject.GetComponent<MeshRenderer>().material = material;
     }
 }
