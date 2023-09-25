@@ -31,7 +31,7 @@ public class Cylinder : MonoBehaviour
         //création grille
         for (int j = 0; j < 2; j++)
         {
-            for (float i = 0; i < meridian; i++)
+            for (int i = 0; i < meridian; i++)
             {
                 //Création des points de la grille
                 if (j == 1)
@@ -52,6 +52,9 @@ public class Cylinder : MonoBehaviour
 
 
                 //Création vertices a faire
+                vertices[i + meridian * j] = Pi;
+
+                //Création triangles
 
 
                 /*if ((j < (height - 1)) && (i < (meridian - 1)))
@@ -66,12 +69,13 @@ public class Cylinder : MonoBehaviour
                 {
                     //coller points 1ère et dernière ligne
                 }*/
-
-                //vertices[i + meridian * j] = Pi ;
-                //GameObject.CreatePrimitive(PrimitiveType.Sphere).transform.position = Pi;
             }
         }
 
+        for(int v=0; v < vertices.Length; v++)
+        {
+            Debug.Log("index : " + v + " | valeur : " + vertices[v]);
+        }
 
         /*Mesh msh = new Mesh();
 
