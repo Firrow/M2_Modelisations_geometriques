@@ -12,11 +12,12 @@ public class Cylinder : MonoBehaviour
     void Start()
     {
         int numberPoints = numberMeridian * 2;
+        CreateWallTriangles(numberMeridian, height, radius, material);
     }
 
     void Update()
     {
-        CreateWallTriangles(numberMeridian, height, radius, material);
+        
     }
 
 
@@ -30,15 +31,28 @@ public class Cylinder : MonoBehaviour
         //création grille
         for (int j = 0; j < 2; j++)
         {
-            for (int i = 0; i < meridian - 1; i++)
+            for (float i = 0; i < meridian; i++)
             {
-                Pi = new Vector3(radius * Mathf.Cos((2 * Mathf.PI * i) / meridian), height / 2, radius * Mathf.Sin((2 * Mathf.PI * i) / meridian));
-
+                //Création des points de la grille
+                if (j == 1)
+                {
+                    Debug.Log("Bas !");
+                    Pi = new Vector3(radius * Mathf.Cos((2 * Mathf.PI * i) / meridian), -height / 2, radius * Mathf.Sin((2 * Mathf.PI * i) / meridian));
+                }
+                else
+                {
+                    Pi = new Vector3(radius * Mathf.Cos((2 * Mathf.PI * i) / meridian), height / 2, radius * Mathf.Sin((2 * Mathf.PI * i) / meridian));
+                }
+               
                 //vertices[i + meridian * j] = Pi;
 
-                GameObject sphere = new GameObject();
-                sphere.transform.position = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform.position = Pi;
-                sphere.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                sphere.transform.position = Pi;
+                sphere.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+
+
+                //Création vertices a faire
+
 
                 /*if ((j < (height - 1)) && (i < (meridian - 1)))
                 {
