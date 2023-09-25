@@ -53,9 +53,13 @@ public class Hello_Triangle : MonoBehaviour
 
 
 
+
+
+
+       
     public void triangleProf()
     {
-        //Dessiner un triangle VERSION 1
+        //Dessiner un triangle
         gameObject.AddComponent<MeshFilter>();          // Creation d'un composant MeshFilter qui peut ensuite être visualisé
         gameObject.AddComponent<MeshRenderer>();
 
