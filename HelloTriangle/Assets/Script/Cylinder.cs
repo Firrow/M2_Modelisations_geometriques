@@ -12,58 +12,58 @@ public class Cylinder : MonoBehaviour
     void Start()
     {
         int numberPoints = numberMeridian * 2;
-        CreateWallTriangles(numberMeridian, height, radius, material);
-    }
 
-    void Update()
-    {
-        
-    }
-
-
-
-    public void CreateWallTriangles(int meridian, int height, int radius, Material material)
-    {
         List<Vector3> triangles = new List<Vector3>();
-        Vector3[] vertices = new Vector3[meridian * height];
+        Vector3[] vertices = new Vector3[numberMeridian * height];
         Vector3 Pi = new Vector3();
+
 
         //création grille
         for (int j = 0; j < 2; j++)
         {
-            for (int i = 0; i < meridian; i++)
+            for (int i = 0; i < numberMeridian; i++)
             {
                 //Création des points de la grille
                 if (j == 1)
                 {
                     Debug.Log("Bas !");
-                    Pi = new Vector3(radius * Mathf.Cos((2 * Mathf.PI * i) / meridian), -height / 2, radius * Mathf.Sin((2 * Mathf.PI * i) / meridian));
+                    Pi = new Vector3(radius * Mathf.Cos((2 * Mathf.PI * i) / numberMeridian), -height / 2, radius * Mathf.Sin((2 * Mathf.PI * i) / numberMeridian));
                 }
                 else
                 {
-                    Pi = new Vector3(radius * Mathf.Cos((2 * Mathf.PI * i) / meridian), height / 2, radius * Mathf.Sin((2 * Mathf.PI * i) / meridian));
+                    Pi = new Vector3(radius * Mathf.Cos((2 * Mathf.PI * i) / numberMeridian), height / 2, radius * Mathf.Sin((2 * Mathf.PI * i) / numberMeridian));
                 }
-               
-                //vertices[i + meridian * j] = Pi;
 
-                GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                sphere.transform.position = Pi;
-                sphere.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+        //vertices[i + numberMeridian * j] = Pi;
 
-
-                //Création vertices a faire
-                vertices[i + meridian * j] = Pi;
-
-                //Création triangles
+        //Dessin point
+        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        sphere.transform.position = Pi;
+        sphere.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
 
 
-                /*if ((j < (height - 1)) && (i < (meridian - 1)))
+        //Création vertices a faire
+        vertices[i + numberMeridian * j] = Pi;
+
+        //Création triangles
+        for (int v = 0; v < vertices.Length; v++)
+        {
+            Debug.Log("index : " + v + " | valeur : " + vertices[v]);
+            //triangles.Add(new Vector3(vertices[v], vertices[v + 1], vertices[numberMeridian + v]));
+        }
+
+
+                
+
+
+
+                /*if ((j < (height - 1)) && (i < (numberMeridian - 1)))
                 {
                     //triangles.Add(new Vector3(numberPoints * j + i, numberPoints * j + i + 1, numberPoints * (j + 1) + i));
                     //triangles.Add(new Vector3(numberPoints * j + i + 1, numberPoints * (j + 1) + i + 1, numberPoints * (j + 1) + i));
 
-                    triangles.Add(new Vector3(meridian * j + i, meridian * j + i + 1, meridian * (j + 1) + i));
-                    triangles.Add(new Vector3(meridian * j + i + 1, meridian * (j + 1) + i + 1, meridian * (j + 1) + i));
+                    triangles.Add(new Vector3(numberMeridian * j + i, numberMeridian * j + i + 1, numberMeridian * (j + 1) + i));
+                    triangles.Add(new Vector3(numberMeridian * j + i + 1, numberMeridian * (j + 1) + i + 1, numberMeridian * (j + 1) + i));
                 }
                 else
                 {
@@ -72,10 +72,7 @@ public class Cylinder : MonoBehaviour
             }
         }
 
-        for(int v=0; v < vertices.Length; v++)
-        {
-            Debug.Log("index : " + v + " | valeur : " + vertices[v]);
-        }
+
 
         /*Mesh msh = new Mesh();
 
@@ -98,4 +95,17 @@ public class Cylinder : MonoBehaviour
         gameObject.GetComponent<MeshFilter>().mesh = msh;           // Remplissage du Mesh et ajout du matériel
         gameObject.GetComponent<MeshRenderer>().material = material;*/
     }
+
+    void Update()
+    {
+        
+    }
+
+
+
+    public void CreateWallTriangles(int numberMeridian, int height, int radius, Material material)
+    {
+
+    }
+
 }
