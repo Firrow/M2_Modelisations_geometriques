@@ -44,42 +44,26 @@ public class Cylinder : MonoBehaviour
             }
         }
 
-        //vertices[i + numberMeridian * j] = Pi;
-
-        Debug.Log("longueur tableau : " + vertices.Length);
-
+   
         //Création triangles
-        //GOOD HAUT
-        /*triangles.Add(new Vector3(0, 1, 4));
-        triangles.Add(new Vector3(1, 2, 5));
-        triangles.Add(new Vector3(2, 3, 6));
-        triangles.Add(new Vector3(3, 0, 7));*/
-
-        /*triangles.Add(new Vector3(1, 5, 4));
-        triangles.Add(new Vector3(2, 6, 5));
-        triangles.Add(new Vector3(3, 7, 6));
-        triangles.Add(new Vector3(0, 4, 7));*/
-
-
         for (int s = 0; s < numberMeridian; s++)
         {
             //Création des triangles
             if (s == numberMeridian-1)
             {
-                triangles.Add(new Vector3(s, 0, numberPoints - 1)); //haut
-                triangles.Add(new Vector3(0, numberPoints/2, numberPoints - 1)); //bas
+                triangles.Add(new Vector3(s, 0, numberPoints - 1)); //Triangle orienté haut
+                triangles.Add(new Vector3(0, numberPoints/2, numberPoints - 1)); //Triangle orienté bas
             }
             else
             {
-                triangles.Add(new Vector3(s, s + 1, numberMeridian + s)); //haut
-                triangles.Add(new Vector3(s + 1, numberPoints/2 + s + 1, numberPoints/2 + s)); //bas
+                triangles.Add(new Vector3(s, s + 1, numberMeridian + s)); //Triangle orienté haut
+                triangles.Add(new Vector3(s + 1, numberPoints/2 + s + 1, numberPoints/2 + s)); //Triangle orienté bas
             }
-            //Debug.Log(triangles[s]);
         }
 
+        //TODO
+        //Dessiner triangles en haut et en bas du cylindre (attention sens des normales)
 
-        //A FAIRE : 
-        //trouver formule dynamique ordre des points des triangles
 
         Mesh msh = new Mesh();                          
 
