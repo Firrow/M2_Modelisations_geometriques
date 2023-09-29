@@ -340,7 +340,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dae784c9a4aae7e45a37131dea5a4eee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberMeridian: 8
+  numberMeridian: 4
   radius: 1
   height: 2
   material: {fileID: 0}
