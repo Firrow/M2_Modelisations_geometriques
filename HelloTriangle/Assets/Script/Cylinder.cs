@@ -13,9 +13,9 @@ public class Cylinder : MonoBehaviour
     {
         int numberPoints = numberMeridian * 2;
 
-        List<Vector3> triangles = new List<Vector3>();
         Vector3[] vertices = new Vector3[numberMeridian * height];
         Vector3 Pi = new Vector3();
+        List<Vector3> triangles = new List<Vector3>();
 
 
         //création grille
@@ -34,53 +34,62 @@ public class Cylinder : MonoBehaviour
                     Pi = new Vector3(radius * Mathf.Cos((2 * Mathf.PI * i) / numberMeridian), height / 2, radius * Mathf.Sin((2 * Mathf.PI * i) / numberMeridian));
                 }
 
-        //vertices[i + numberMeridian * j] = Pi;
+                //Création vertices a faire
+                vertices[i + numberMeridian * j] = Pi;
 
-        //Dessin point
-        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        sphere.transform.position = Pi;
-        sphere.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-
-
-        //Création vertices a faire
-        vertices[i + numberMeridian * j] = Pi;
-
-        //Création triangles
-        for (int v = 0; v < vertices.Length; v++)
-        {
-            Debug.Log("index : " + v + " | valeur : " + vertices[v]);
-            //triangles.Add(new Vector3(vertices[v], vertices[v + 1], vertices[numberMeridian + v]));
-        }
-
-
-                
-
-
-
-                /*if ((j < (height - 1)) && (i < (numberMeridian - 1)))
-                {
-                    //triangles.Add(new Vector3(numberPoints * j + i, numberPoints * j + i + 1, numberPoints * (j + 1) + i));
-                    //triangles.Add(new Vector3(numberPoints * j + i + 1, numberPoints * (j + 1) + i + 1, numberPoints * (j + 1) + i));
-
-                    triangles.Add(new Vector3(numberMeridian * j + i, numberMeridian * j + i + 1, numberMeridian * (j + 1) + i));
-                    triangles.Add(new Vector3(numberMeridian * j + i + 1, numberMeridian * (j + 1) + i + 1, numberMeridian * (j + 1) + i));
-                }
-                else
-                {
-                    //coller points 1ère et dernière ligne
-                }*/
+                //Dessin point
+                GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                sphere.transform.position = Pi;
+                sphere.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
             }
         }
 
+        //vertices[i + numberMeridian * j] = Pi;
+
+        Debug.Log("longueur tableau : " + vertices.Length);
+
+        //Création triangles
+        //GOOD HAUT
+        /*triangles.Add(new Vector3(0, 1, 4));
+        triangles.Add(new Vector3(1, 2, 5));
+        triangles.Add(new Vector3(2, 3, 6));
+        triangles.Add(new Vector3(3, 0, 7));*/
+
+        /*triangles.Add(new Vector3(1, 5, 4));
+        triangles.Add(new Vector3(2, 6, 5));
+        triangles.Add(new Vector3(3, 7, 6));
+        triangles.Add(new Vector3(0, 4, 7));*/
 
 
-        /*Mesh msh = new Mesh();
+        for (int s = 0; s < numberMeridian; s++)
+        {
+            //Création des triangles
+            if (s == numberMeridian-1)
+            {
+                triangles.Add(new Vector3(s, 0, numberPoints - 1)); //haut
+                triangles.Add(new Vector3(0, numberPoints/2, numberPoints - 1)); //bas
+            }
+            else
+            {
+                triangles.Add(new Vector3(s, s + 1, numberMeridian + s)); //haut
+                triangles.Add(new Vector3(s + 1, numberPoints/2 + s + 1, numberPoints/2 + s)); //bas
+            }
+            //Debug.Log(triangles[s]);
+        }
 
-        gameObject.AddComponent<MeshFilter>();          // Creation d'un composant MeshFilter qui peut ensuite être visualisé
+
+        //A FAIRE : 
+        //trouver formule dynamique ordre des points des triangles
+
+        Mesh msh = new Mesh();                          
+
+
+        gameObject.AddComponent<MeshFilter>();          
         gameObject.AddComponent<MeshRenderer>();
 
         msh.vertices = vertices;
 
+        //Permet de passer d'une liste à un tableau de int
         int triangleTabSize = triangles.Count * 3;
         int[] triangleTab = new int[triangleTabSize];
         for (int i = 0; i < triangles.Count; i++)
@@ -93,7 +102,7 @@ public class Cylinder : MonoBehaviour
         msh.triangles = triangleTab;
 
         gameObject.GetComponent<MeshFilter>().mesh = msh;           // Remplissage du Mesh et ajout du matériel
-        gameObject.GetComponent<MeshRenderer>().material = material;*/
+        gameObject.GetComponent<MeshRenderer>().material = material;
     }
 
     void Update()
