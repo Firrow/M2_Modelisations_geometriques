@@ -342,7 +342,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberMeridian: 4
   radius: 1
-  height: 2
+  height: 4
   material: {fileID: 0}
 --- !u!4 &2122723846
 Transform:
