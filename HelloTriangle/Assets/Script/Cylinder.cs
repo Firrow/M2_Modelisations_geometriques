@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,21 +7,52 @@ public class Cylinder : MonoBehaviour
 {
     public int numberMeridian;
     public int radius;
-    public int height;
+    public int numberCircle;
     public Material material;
+    public double height;
 
+    /*public int numberMeridian;
+    public int radius;
+    public int height;
+    public int numberCircle;
+    public Material material;*/
+
+    private int pointIndex = 0;
     void Start()
     {
-        int numberPointsSides = numberMeridian * height;
+        int numberPointsSides = numberMeridian * numberCircle;
         int numberPointsTotal = numberMeridian * 2 + 2;
 
-        Vector3[] vertices = new Vector3[numberMeridian * height + 2];
+        Vector3[] vertices = new Vector3[numberMeridian * numberCircle + 2];
         Vector3 Pi = new Vector3();
         List<Vector3> triangles = new List<Vector3>();
 
 
         //création grille
-        for (int j = 0; j < 2; j++)
+        for (int j = 1; j <= numberCircle; j++)
+        {
+            for (int i = 0; i < numberMeridian; i++)
+            {
+                //Création des points de la grille
+                //TODO : ne pas tester j == 1 et autre --> inclure j dans les formules et faire en sorte que 1ère boucle parcourt tous les cercles
+                
+                Pi = new Vector3(radius * Mathf.Cos((2 * Mathf.PI * i) / numberMeridian), j, radius * Mathf.Sin((2 * Mathf.PI * i) / numberMeridian));
+
+                //Création vertices a faire
+                vertices[pointIndex] = Pi;
+
+                Debug.Log("nombre : " + pointIndex);
+                pointIndex++;
+
+                //Dessin point
+                GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                sphere.transform.position = Pi;
+                sphere.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+            }
+        }
+
+        //création grille BASE
+        /*for (int j = 0; j < 2; j++)
         {
             for (int i = 0; i < numberMeridian; i++)
             {
@@ -43,9 +75,21 @@ public class Cylinder : MonoBehaviour
                 sphere.transform.position = Pi;
                 sphere.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
             }
-        }
+        }*/
 
         //Point centre face du haut et du bas cylindre
+        Vector3 CentreHaut = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + numberCircle, gameObject.transform.position.z);
+        Vector3 CentreBas = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z);
+        vertices[numberMeridian * numberCircle] = CentreHaut;
+        vertices[numberMeridian * numberCircle + 1] = CentreBas;
+        GameObject sphereHaut = GameObject.CreatePrimitive(PrimitiveType.Sphere); //partie temporaire
+        sphereHaut.transform.position = CentreHaut;
+        sphereHaut.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+        GameObject sphereBas = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        sphereBas.transform.position = CentreBas;
+        sphereBas.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+
+        //Point centre face du haut et du bas cylindre BASE
         /*Vector3 CentreHaut = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + (float)height / 2, gameObject.transform.position.z);
         Vector3 CentreBas = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y - (float)height / 2, gameObject.transform.position.z);
         vertices[numberMeridian * height] = CentreHaut;
