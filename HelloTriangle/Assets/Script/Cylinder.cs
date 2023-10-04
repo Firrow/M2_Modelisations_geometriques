@@ -18,6 +18,8 @@ public class Cylinder : MonoBehaviour
     public Material material;*/
 
     private int pointIndex = 0;
+    private double space;
+
     void Start()
     {
         int numberPointsSides = numberMeridian * numberCircle;
@@ -26,6 +28,7 @@ public class Cylinder : MonoBehaviour
         Vector3[] vertices = new Vector3[numberMeridian * numberCircle + 2];
         Vector3 Pi = new Vector3();
         List<Vector3> triangles = new List<Vector3>();
+        space = height / numberCircle;
 
 
         //création grille
@@ -36,12 +39,12 @@ public class Cylinder : MonoBehaviour
                 //Création des points de la grille
                 //TODO : ne pas tester j == 1 et autre --> inclure j dans les formules et faire en sorte que 1ère boucle parcourt tous les cercles
                 
-                Pi = new Vector3(radius * Mathf.Cos((2 * Mathf.PI * i) / numberMeridian), j, radius * Mathf.Sin((2 * Mathf.PI * i) / numberMeridian));
+                Pi = new Vector3(radius * Mathf.Cos((2 * Mathf.PI * i) / numberMeridian), (float)(j * space - space), radius * Mathf.Sin((2 * Mathf.PI * i) / numberMeridian));
 
                 //Création vertices a faire
                 vertices[pointIndex] = Pi;
 
-                Debug.Log("nombre : " + pointIndex);
+                //Debug.Log("nombre : " + pointIndex);
                 pointIndex++;
 
                 //Dessin point
@@ -77,8 +80,10 @@ public class Cylinder : MonoBehaviour
             }
         }*/
 
+        Debug.Log("Space : " + space);
+
         //Point centre face du haut et du bas cylindre
-        Vector3 CentreHaut = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + numberCircle, gameObject.transform.position.z);
+        Vector3 CentreHaut = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + (float)space * (numberCircle-1), gameObject.transform.position.z);
         Vector3 CentreBas = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z);
         vertices[numberMeridian * numberCircle] = CentreHaut;
         vertices[numberMeridian * numberCircle + 1] = CentreBas;
@@ -103,17 +108,42 @@ public class Cylinder : MonoBehaviour
 
 
         //Création triangles
-        /*for (int s = 0; s < numberMeridian; s++)
+        for (int circle = 1; circle <= numberCircle; circle++)
         {
-            if (s == numberMeridian-1)
+            for (int s = 0; s < numberMeridian; s++)
+            {
+                Debug.Log("s : " + s);
+                int temp1 = s + 1;
+                Debug.Log("s+1 : " + temp1);
+                int temp2 = circle + 1 + s;
+                Debug.Log("circle + 1 + s : " + temp2);
+                Debug.Log("------------------------------------------------------------------");
+                /*if (s == numberMeridian - 1)
+                {
+                    triangles.Add(new Vector3(s, 0, numberPointsSides - 1)); //Triangle orienté haut
+                    //triangles.Add(new Vector3(0, numberPointsSides/2, numberPointsSides - 1)); //Triangle orienté bas
+                }
+                else
+                {*/
+                triangles.Add(new Vector3(s, s + 1, circle + 1 + s)); //Triangle orienté haut
+                    //triangles.Add(new Vector3(s + 1, numberPointsSides/2 + s + 1, numberPointsSides/2 + s)); //Triangle orienté bas
+                //}
+            }
+        }
+
+
+        /* //Création triangles
+        for (int s = 0; s < numberMeridian; s++)
+        {
+            if (s == numberMeridian - 1)
             {
                 triangles.Add(new Vector3(s, 0, numberPointsSides - 1)); //Triangle orienté haut
-                triangles.Add(new Vector3(0, numberPointsSides/2, numberPointsSides - 1)); //Triangle orienté bas
+                //triangles.Add(new Vector3(0, numberPointsSides/2, numberPointsSides - 1)); //Triangle orienté bas
             }
             else
             {
                 triangles.Add(new Vector3(s, s + 1, numberMeridian + s)); //Triangle orienté haut
-                triangles.Add(new Vector3(s + 1, numberPointsSides/2 + s + 1, numberPointsSides/2 + s)); //Triangle orienté bas
+                //triangles.Add(new Vector3(s + 1, numberPointsSides/2 + s + 1, numberPointsSides/2 + s)); //Triangle orienté bas
             }
         }*/
 
