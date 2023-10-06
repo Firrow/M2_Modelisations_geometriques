@@ -22,8 +22,7 @@ public class Cylinder : MonoBehaviour
 
     void Start()
     {
-        int numberPointsSides = numberMeridian * numberCircle;
-        int numberPointsTotal = numberMeridian * 2 + 2;
+        int numberPointsTotal = numberMeridian * numberCircle + 2;
 
         Vector3[] vertices = new Vector3[numberMeridian * numberCircle + 2];
         Vector3 Pi = new Vector3();
@@ -113,32 +112,30 @@ public class Cylinder : MonoBehaviour
             Debug.Log("--------------------------------------------");
             for (int s = 0; s < numberMeridian; s++)
             {
-                int temp1 = s + numberMeridian * (c - 1);
+                /*int temp1 = s + numberMeridian * (c - 1);
                 int temp2 = s + (numberMeridian * c - (numberMeridian - 1));
                 int temp3 = numberMeridian * c + s;
                 int temp5 = numberMeridian * c + s + 1;
                 int temp6 = numberMeridian * c - numberMeridian + s + 1;
                 int temp7 = numberMeridian * (c - 1);
                 int temp8 = numberMeridian * c + s;
-                int temp9 = numberMeridian * c;
                 int temp10 = numberMeridian * c - numberMeridian;
-                int temp11 = numberMeridian * c;
+                int temp11 = numberMeridian * c;*/
 
 
                 Debug.Log("cercle : " + c + " || sommet : " + s);
-                
 
                 if (s == numberMeridian-1)
                 {
-                    Debug.Log("haut FINAL: " + temp10 + " " + temp8 + " " + temp11);
-                    Debug.Log("bas FINAL : " + temp3 + " " + temp7 + " " + temp1);
+                    /*Debug.Log("haut FINAL: " + temp10 + " " + temp8 + " " + temp11);
+                    Debug.Log("bas FINAL : " + temp3 + " " + temp7 + " " + temp1);*/
                     triangles.Add(new Vector3(numberMeridian * c - numberMeridian, numberMeridian * c + s, numberMeridian * c)); //Triangle orienté haut
                     triangles.Add(new Vector3(numberMeridian * c + s, numberMeridian * (c - 1), s + numberMeridian * (c - 1))); //Triangle orienté bas
                 }
                 else
                 {
-                    Debug.Log("haut : " + temp6 + " " + temp3 + " " + temp5);
-                    Debug.Log("bas : " + temp3 + " " + temp2 + " " + temp1);
+                    /*Debug.Log("haut : " + temp6 + " " + temp3 + " " + temp5);
+                    Debug.Log("bas : " + temp3 + " " + temp2 + " " + temp1);*/
                     triangles.Add(new Vector3(numberMeridian * c - numberMeridian + s + 1, numberMeridian * c + s, numberMeridian * c + s + 1)); //Triangle orienté haut
                     triangles.Add(new Vector3(numberMeridian * c + s, s + (numberMeridian * c - (numberMeridian - 1)), s + numberMeridian * (c - 1))); //Triangle orienté bas
                 }
@@ -162,7 +159,57 @@ public class Cylinder : MonoBehaviour
             }
         }*/
 
+
+
         //création face du haut et du bas cylindre
+        Debug.Log("nombrePointTotal : " + numberPointsTotal);
+        for (int c = 0; c < numberCircle; c++)
+        {
+            if (c == 0) //premier = face du bas
+            {
+                for (int s = 0; s < numberMeridian; s++) //pour chaque point du cercle
+                {
+                    if (s == numberMeridian - 1) //dernier point du cercle
+                    {
+                        int temp3 = s + 1;
+                        int temp4 = numberPointsTotal - 1;
+                        //Debug.Log("face bas dernier point ! : " + s + " " + temp3 + " " + temp4);
+                        triangles.Add(new Vector3(s, 0, numberPointsTotal - 1));
+                    }
+                    else
+                    {
+                        int temp3 = s + 1;
+                        int temp4 = numberPointsTotal - 1;
+                        //Debug.Log("face bas: " + s + " " + temp3 + " " + temp4);
+                        triangles.Add(new Vector3(s, s + 1, numberPointsTotal - 1));
+                    }
+                }
+            }
+            else if (c == numberCircle-1) //dernier = face du haut
+            {
+                for (int s = numberPointsTotal - numberMeridian - 2; s < numberPointsTotal - 2; s++)
+                {
+                    Debug.Log("s : " + s);
+                    if (s == numberPointsTotal - 3) //dernier point du cercle
+                    {
+                        int temp5 = numberPointsTotal - 2;
+                        int temp6 = numberPointsTotal - numberMeridian - 2;
+                        Debug.Log("face haut dernier point ! : " + temp5 + " " + s + " " + temp6);
+                        triangles.Add(new Vector3(numberPointsTotal - numberMeridian - 2, s, numberPointsTotal - 2));
+                    }
+                    else
+                    {
+                        int temp3 = s + 1;
+                        int temp7 = numberPointsTotal - 2;
+
+                        Debug.Log("face haut : " + temp7 + " " + s + " " + temp3);
+                        triangles.Add(new Vector3(s + 1, s, numberPointsTotal - 2));
+                    }
+                }
+            }
+        }
+
+        //ancien code
         /*for (int s = 0; s < numberPointsTotal; s++)
         {
             if (s <= numberPointsTotal / 2 - 2)
