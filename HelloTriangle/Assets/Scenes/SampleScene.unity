@@ -340,11 +340,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dae784c9a4aae7e45a37131dea5a4eee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberMeridian: 4
+  numberMeridian: 10
   radius: 1
-  numberCircle: 3
+  numberCircle: 6
   material: {fileID: 0}
-  height: 5
+  height: 7
 --- !u!4 &2122723846
 Transform:
   m_ObjectHideFlags: 0
