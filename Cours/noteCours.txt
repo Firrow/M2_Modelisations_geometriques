@@ -1,0 +1,15 @@
+NOTE MODELISATION 3D :
+
+
+Sphère :
+x² + y² + z² - r² (formule continue)
+	--> = 0 : point sur la sphère
+	--> < 0 : point à l'intérieur de la sphère
+	--> > 0 : point à l'extérieur de la sphère 
+Teta appartient [0, 2Pi]
+Phi appartient [0, Pi]
+--> Pour un Phi donné, je fais un 360 degrés sur mon teta
+--> Phi et teta permettent de subdiviser la forme pour avoir des facettes (facétisation)
+
+Cylindre :
+Teta = point sur chaque tranche du cylindre (angle "pas"). Il faut les relier pour obtenir les triangles
