@@ -19,13 +19,51 @@ public class Cylinder : MonoBehaviour
     {
         int numberPointsTotal = numberMeridian * numberCircle + 2;
         Vector3[] vertices = new Vector3[numberMeridian * numberCircle + 2];
-        Vector3 Point = new Vector3();
         List<Vector3> triangles = new List<Vector3>();
         space = height / numberCircle;
         pointIndex = 0;
 
 
         //création grille (de bas en haut)
+        CreateGrid(vertices);
+        //Point centre face du haut et du bas cylindre
+        CreatePointUpDown(vertices);
+
+
+        //Création triangles
+        CreateTriangles(triangles);
+
+        //création face du bas et du haut cylindre
+        CreateFacesUpDown(triangles, numberPointsTotal);
+
+        //convertion liste de triangles en tableau de triangles
+        int triangleTabSize = triangles.Count * 3;
+        int[] triangleTab = new int[triangleTabSize];
+        for (int i = 0; i < triangles.Count; i++)
+        {
+            triangleTab[i * 3] = (int)triangles[i][0];
+            triangleTab[i * 3 + 1] = (int)triangles[i][1];
+            triangleTab[i * 3 + 2] = (int)triangles[i][2];
+        }
+
+        Mesh msh = new Mesh();
+
+        msh.vertices = vertices;
+        msh.triangles = triangleTab;
+
+        gameObject.GetComponent<MeshFilter>().mesh = msh;           
+        gameObject.GetComponent<MeshRenderer>().material = material;
+    }
+
+
+
+
+
+
+    private void CreateGrid(Vector3[] vertices)
+    {
+        Vector3 Point = new Vector3();
+
         for (int j = 1; j <= numberCircle; j++)
         {
             for (int i = 0; i < numberMeridian; i++)
@@ -44,9 +82,10 @@ public class Cylinder : MonoBehaviour
                 sphere.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
             }
         }
+    }
 
-        //Point centre face du haut et du bas cylindre
-        Vector3 CentreHaut = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + (float)space * (numberCircle-1), gameObject.transform.position.z);
+    private void CreatePointUpDown(Vector3[] vertices) {
+        Vector3 CentreHaut = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + (float)space * (numberCircle - 1), gameObject.transform.position.z);
         Vector3 CentreBas = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z);
         vertices[numberMeridian * numberCircle] = CentreHaut;
         vertices[numberMeridian * numberCircle + 1] = CentreBas;
@@ -57,14 +96,15 @@ public class Cylinder : MonoBehaviour
         GameObject sphereBas = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         sphereBas.transform.position = CentreBas;
         sphereBas.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+    }
 
-
-        //Création triangles
+    private void CreateTriangles(List<Vector3> triangles)
+    {
         for (int c = 1; c < numberCircle; c++)
         {
             for (int s = 0; s < numberMeridian; s++)
             {
-                if (s == numberMeridian-1)
+                if (s == numberMeridian - 1)
                 {
                     triangles.Add(new Vector3(numberMeridian * c - numberMeridian, numberMeridian * c + s, numberMeridian * c)); //Triangle orienté haut
                     triangles.Add(new Vector3(numberMeridian * c + s, numberMeridian * (c - 1), s + numberMeridian * (c - 1))); //Triangle orienté bas
@@ -76,9 +116,10 @@ public class Cylinder : MonoBehaviour
                 }
             }
         }
+    }
 
-
-        //création face du bas et du haut cylindre
+    private void CreateFacesUpDown(List<Vector3> triangles, int numberPointsTotal)
+    {
         for (int c = 0; c < numberCircle; c++)
         {
             if (c == 0) //face du bas
@@ -95,7 +136,7 @@ public class Cylinder : MonoBehaviour
                     }
                 }
             }
-            else if (c == numberCircle-1) //face du haut
+            else if (c == numberCircle - 1) //face du haut
             {
                 for (int s = numberPointsTotal - numberMeridian - 2; s < numberPointsTotal - 2; s++) //pour chaque point du cercle
                 {
@@ -110,25 +151,5 @@ public class Cylinder : MonoBehaviour
                 }
             }
         }
-
-        Mesh msh = new Mesh();                          
-
-        msh.vertices = vertices;
-
-        //convertion liste de triangles en tableau de triangles
-        int triangleTabSize = triangles.Count * 3;
-        int[] triangleTab = new int[triangleTabSize];
-        for (int i = 0; i < triangles.Count; i++)
-        {
-            triangleTab[i * 3] = (int)triangles[i][0];
-            triangleTab[i * 3 + 1] = (int)triangles[i][1];
-            triangleTab[i * 3 + 2] = (int)triangles[i][2];
-        }
-
-        msh.triangles = triangleTab;
-
-        gameObject.GetComponent<MeshFilter>().mesh = msh;           
-        gameObject.GetComponent<MeshRenderer>().material = material;
     }
-
 }

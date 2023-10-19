@@ -51,11 +51,6 @@ public class Hello_Triangle : MonoBehaviour
         gameObject.GetComponent<MeshRenderer>().material = material;
     }
 
-
-
-
-
-
        
     public void triangleProf()
     {
