@@ -7,36 +7,36 @@ public class Sphere : MonoBehaviour
 {
     public int numberMeridian;
     public int radius;
-    public int numberCircle;
+    public int numberParallele;
     public Material material;
     public double height;
 
     private int pointIndex;
-    private double space;
 
 
     void Start()
     {
-        int numberPointsTotal = numberMeridian * numberCircle + 2;
-        Vector3[] vertices = new Vector3[numberMeridian * numberCircle + 2];
+        int numberPointsTotal = numberMeridian * numberParallele + 2;
+        Vector3[] vertices = new Vector3[numberMeridian * numberParallele + 2];
         Vector3 Point = new Vector3();
         List<Vector3> triangles = new List<Vector3>();
-        space = height / numberCircle;
         pointIndex = 0;
 
 
         //création grille (de bas en haut)
-        for (int j = 1; j <= numberCircle; j++)
+        for (int j = 1; j <= numberParallele; j++)
         {
+            float phi = (float)(Math.PI * j / numberParallele);
             for (int i = 0; i < numberMeridian; i++)
             {
+                float theta = 2.0f * Mathf.PI * i / numberMeridian;
+                float x = (float)(radius * Math.Sin(phi) * Math.Cos(theta));
+                float y = (float)(radius * Math.Sin(phi) * Math.Sin(theta));
+                float z = radius * Mathf.Cos(phi);
                 //faire vérification si 0 < x < numberMeridian/2 et x > numberMeridian/2 et else x == numberMeridian. Changer la formule de la création du point en fonction du cas
                 //Création des points de la grille
-                Point = new Vector3(radius * Mathf.Cos((2 * Mathf.PI * i) / numberMeridian), (float)(j * space - space), radius * Mathf.Sin((2 * Mathf.PI * i) / numberMeridian));
-
-
-
-
+                //Point = new Vector3(radius * Mathf.Cos((2 * Mathf.PI * i) / numberMeridian), (float)(j * space - space), radius * Mathf.Sin((2 * Mathf.PI * i) / numberMeridian));
+                Point = new Vector3(x, y, z);
 
                 //Création vertices a faire
                 vertices[pointIndex] = Point;
@@ -51,10 +51,10 @@ public class Sphere : MonoBehaviour
         }
 
         //Point centre face du haut et du bas cylindre
-        Vector3 CentreHaut = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + (float)space * (numberCircle-1), gameObject.transform.position.z);
-        Vector3 CentreBas = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z);
-        vertices[numberMeridian * numberCircle] = CentreHaut;
-        vertices[numberMeridian * numberCircle + 1] = CentreBas;
+        Vector3 CentreHaut = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + radius, gameObject.transform.position.z);
+        Vector3 CentreBas = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z + radius);
+        vertices[numberMeridian * numberParallele] = CentreHaut;
+        vertices[numberMeridian * numberParallele + 1] = CentreBas;
         //Dessin point (optionnel)
         GameObject sphereHaut = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         sphereHaut.transform.position = CentreHaut;
@@ -65,7 +65,7 @@ public class Sphere : MonoBehaviour
 
 
         //Création triangles
-        for (int c = 1; c < numberCircle; c++)
+        for (int c = 1; c < numberParallele; c++)
         {
             for (int s = 0; s < numberMeridian; s++)
             {
@@ -84,7 +84,7 @@ public class Sphere : MonoBehaviour
 
 
         //création face du bas et du haut cylindre
-        for (int c = 0; c < numberCircle; c++)
+        for (int c = 0; c < numberParallele; c++)
         {
             if (c == 0) //face du bas
             {
@@ -100,7 +100,7 @@ public class Sphere : MonoBehaviour
                     }
                 }
             }
-            else if (c == numberCircle-1) //face du haut
+            else if (c == numberParallele-1) //face du haut
             {
                 for (int s = numberPointsTotal - numberMeridian - 2; s < numberPointsTotal - 2; s++) //pour chaque point du cercle
                 {
