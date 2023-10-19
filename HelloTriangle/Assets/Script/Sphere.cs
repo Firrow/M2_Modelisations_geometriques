@@ -51,7 +51,7 @@ public class Sphere : MonoBehaviour
         }
 
         //Point centre face du haut et du bas cylindre
-        Vector3 CentreHaut = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + radius, gameObject.transform.position.z);
+        Vector3 CentreHaut = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z - radius);
         Vector3 CentreBas = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z + radius);
         vertices[numberMeridian * numberParallele] = CentreHaut;
         vertices[numberMeridian * numberParallele + 1] = CentreBas;
@@ -62,6 +62,14 @@ public class Sphere : MonoBehaviour
         GameObject sphereBas = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         sphereBas.transform.position = CentreBas;
         sphereBas.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+
+
+        //DEBUG
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            Debug.Log("Index : " + i + " X : " + vertices[i].x + " Y : " + vertices[i].y + " Z : " + vertices[i].z);
+        }
+
 
 
         //Création triangles
@@ -132,7 +140,8 @@ public class Sphere : MonoBehaviour
 
         msh.triangles = triangleTab;
 
-        gameObject.GetComponent<MeshFilter>().mesh = msh;           
+        gameObject.GetComponent<MeshFilter>().mesh = msh;
+        gameObject.GetComponent<MeshFilter>().mesh.RecalculateNormals();
         gameObject.GetComponent<MeshRenderer>().material = material;
     }
 
