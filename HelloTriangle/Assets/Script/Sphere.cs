@@ -30,9 +30,9 @@ public class Sphere : MonoBehaviour
             for (int i = 0; i < numberMeridian; i++)
             {
                 float theta = 2.0f * Mathf.PI * i / numberMeridian;
-                float x = (float)(radius * Math.Sin(phi) * Math.Cos(theta));
-                float y = (float)(radius * Math.Sin(phi) * Math.Sin(theta));
-                float z = radius * Mathf.Cos(phi);
+                float z = (float)(radius * Math.Sin(phi) * Math.Cos(theta));
+                float x = (float)(radius * Math.Sin(phi) * Math.Sin(theta));
+                float y = radius * Mathf.Cos(phi);
                 //faire vérification si 0 < x < numberMeridian/2 et x > numberMeridian/2 et else x == numberMeridian. Changer la formule de la création du point en fonction du cas
                 //Création des points de la grille
                 //Point = new Vector3(radius * Mathf.Cos((2 * Mathf.PI * i) / numberMeridian), (float)(j * space - space), radius * Mathf.Sin((2 * Mathf.PI * i) / numberMeridian));
@@ -51,8 +51,8 @@ public class Sphere : MonoBehaviour
         }
 
         //Point centre face du haut et du bas cylindre
-        Vector3 CentreHaut = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z - radius);
-        Vector3 CentreBas = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z + radius);
+        Vector3 CentreHaut = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y - radius, gameObject.transform.position.z);
+        Vector3 CentreBas = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + radius, gameObject.transform.position.z);
         vertices[numberMeridian * numberParallele] = CentreHaut;
         vertices[numberMeridian * numberParallele + 1] = CentreBas;
         //Dessin point (optionnel)
