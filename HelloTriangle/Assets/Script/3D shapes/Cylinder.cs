@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +5,7 @@ public class Cylinder : MonoBehaviour
 {
     public int numberMeridian;
     public int radius;
-    public int numberCircle;
+    public int numberParallele;
     public Material material;
     public double height;
 
@@ -16,10 +14,10 @@ public class Cylinder : MonoBehaviour
 
     void Start()
     {
-        int numberPointsTotal = numberMeridian * numberCircle + 2;
-        Vector3[] vertices = new Vector3[numberMeridian * numberCircle + 2];
+        int numberPointsTotal = numberMeridian * numberParallele + 2;
+        Vector3[] vertices = new Vector3[numberMeridian * numberParallele + 2];
         List<Vector3> triangles = new List<Vector3>();
-        space = height / numberCircle;
+        space = height / numberParallele;
 
 
         //création grille (de bas en haut)
@@ -49,7 +47,7 @@ public class Cylinder : MonoBehaviour
         Vector3 Point = new Vector3();
         int pointIndex = 0;
 
-        for (int j = 1; j <= numberCircle; j++)
+        for (int j = 1; j <= numberParallele; j++)
         {
             for (int i = 0; i < numberMeridian; i++)
             {
@@ -68,18 +66,18 @@ public class Cylinder : MonoBehaviour
     }
 
     private void CreatePointUpDown(Vector3[] vertices) {
-        Vector3 CentreHaut = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + (float)space * (numberCircle - 1), gameObject.transform.position.z);
-        vertices[numberMeridian * numberCircle] = CentreHaut;
+        Vector3 CentreHaut = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + (float)space * (numberParallele - 1), gameObject.transform.position.z);
+        vertices[numberMeridian * numberParallele] = CentreHaut;
         DisplayVertices(CentreHaut);
 
         Vector3 CentreBas = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z);
-        vertices[numberMeridian * numberCircle + 1] = CentreBas;
+        vertices[numberMeridian * numberParallele + 1] = CentreBas;
         DisplayVertices(CentreBas);
     }
 
     private void DefineTriangles(List<Vector3> triangles)
     {
-        for (int c = 1; c < numberCircle; c++)
+        for (int c = 1; c < numberParallele; c++)
         {
             for (int s = 0; s < numberMeridian; s++)
             {
@@ -99,7 +97,7 @@ public class Cylinder : MonoBehaviour
 
     private void CreateTrianglesUpDown(List<Vector3> triangles, int numberPointsTotal)
     {
-        for (int c = 0; c < numberCircle; c++)
+        for (int c = 0; c < numberParallele; c++)
         {
             if (c == 0) //face du bas
             {
@@ -115,7 +113,7 @@ public class Cylinder : MonoBehaviour
                     }
                 }
             }
-            else if (c == numberCircle - 1) //face du haut
+            else if (c == numberParallele - 1) //face du haut
             {
                 for (int s = numberPointsTotal - numberMeridian - 2; s < numberPointsTotal - 2; s++) //pour chaque point du cercle
                 {
