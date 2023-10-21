@@ -11,7 +11,6 @@ public class Cylinder : MonoBehaviour
     public Material material;
     public double height;
 
-    private int pointIndex;
     private double space;
 
 
@@ -21,7 +20,6 @@ public class Cylinder : MonoBehaviour
         Vector3[] vertices = new Vector3[numberMeridian * numberCircle + 2];
         List<Vector3> triangles = new List<Vector3>();
         space = height / numberCircle;
-        pointIndex = 0;
 
 
         //création grille (de bas en haut)
@@ -31,27 +29,25 @@ public class Cylinder : MonoBehaviour
 
 
         //Création triangles
-        CreateTriangles(triangles);
+        DefineTriangles(triangles);
 
         //création face du bas et du haut cylindre
-        CreateFacesUpDown(triangles, numberPointsTotal);
+        CreateTrianglesUpDown(triangles, numberPointsTotal);
 
         //convertion liste de triangles en tableau de triangles
         int[] triangleTab = new int[triangles.Count * 3];
         triangleTab = ListTrianglesToArray(triangles, triangleTab);
 
         //Affichage
-        Display(vertices, triangleTab);
+        DisplayCylinder(vertices, triangleTab);
     }
-
-
-
 
 
 
     private void CreateGrid(Vector3[] vertices)
     {
         Vector3 Point = new Vector3();
+        int pointIndex = 0;
 
         for (int j = 1; j <= numberCircle; j++)
         {
@@ -66,28 +62,22 @@ public class Cylinder : MonoBehaviour
                 pointIndex++;
 
                 //Dessin point (optionnel)
-                GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                sphere.transform.position = Point;
-                sphere.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+                DisplayVertices(Point);
             }
         }
     }
 
     private void CreatePointUpDown(Vector3[] vertices) {
         Vector3 CentreHaut = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + (float)space * (numberCircle - 1), gameObject.transform.position.z);
-        Vector3 CentreBas = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z);
         vertices[numberMeridian * numberCircle] = CentreHaut;
+        DisplayVertices(CentreHaut);
+
+        Vector3 CentreBas = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z);
         vertices[numberMeridian * numberCircle + 1] = CentreBas;
-        //Dessin point (optionnel)
-        GameObject sphereHaut = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        sphereHaut.transform.position = CentreHaut;
-        sphereHaut.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-        GameObject sphereBas = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        sphereBas.transform.position = CentreBas;
-        sphereBas.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+        DisplayVertices(CentreBas);
     }
 
-    private void CreateTriangles(List<Vector3> triangles)
+    private void DefineTriangles(List<Vector3> triangles)
     {
         for (int c = 1; c < numberCircle; c++)
         {
@@ -107,7 +97,7 @@ public class Cylinder : MonoBehaviour
         }
     }
 
-    private void CreateFacesUpDown(List<Vector3> triangles, int numberPointsTotal)
+    private void CreateTrianglesUpDown(List<Vector3> triangles, int numberPointsTotal)
     {
         for (int c = 0; c < numberCircle; c++)
         {
@@ -154,7 +144,7 @@ public class Cylinder : MonoBehaviour
         return triangleTab;
     }
 
-    private void Display(Vector3[] vertices, int[] triangleTab)
+    private void DisplayCylinder(Vector3[] vertices, int[] triangleTab)
     {
         Mesh msh = new Mesh();
 
@@ -163,5 +153,12 @@ public class Cylinder : MonoBehaviour
 
         gameObject.GetComponent<MeshFilter>().mesh = msh;
         gameObject.GetComponent<MeshRenderer>().material = material;
+    }
+
+    private void DisplayVertices(Vector3 vertice)
+    {
+        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        sphere.transform.position = vertice;
+        sphere.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
     }
 }
