@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,12 +17,34 @@ public class Sphere : MonoBehaviour
     {
         int numberPointsTotal = numberMeridian * numberParallele + 2;
         Vector3[] vertices = new Vector3[numberMeridian * numberParallele + 2];
-        Vector3 Point = new Vector3();
         List<Vector3> triangles = new List<Vector3>();
         pointIndex = 0;
 
 
         //création grille (de bas en haut)
+        CreateGrid(vertices);
+
+        //Point centre face du haut et du bas cylindre
+        CreatePointUpDown(vertices);
+
+        //Création triangles
+        DefineTriangles(triangles);
+
+
+        //création face du bas et du haut cylindre
+        CreateTrianglesUpDown(triangles, numberPointsTotal);
+
+        //convertion liste de triangles en tableau de triangles
+        int[] triangleTab = new int[triangles.Count * 3];
+        ListTrianglesToArray(triangles, triangleTab);
+
+        //Affichage
+        DisplaySphere(vertices, triangleTab);
+    }
+
+    private void CreateGrid(Vector3[] vertices)
+    {
+        Vector3 Point = new Vector3();
         for (int j = 1; j <= numberParallele; j++)
         {
             float phi = (float)(Math.PI * j / numberParallele);
@@ -33,9 +54,7 @@ public class Sphere : MonoBehaviour
                 float z = (float)(radius * Math.Sin(phi) * Math.Cos(theta));
                 float x = (float)(radius * Math.Sin(phi) * Math.Sin(theta));
                 float y = radius * Mathf.Cos(phi);
-                //faire vérification si 0 < x < numberMeridian/2 et x > numberMeridian/2 et else x == numberMeridian. Changer la formule de la création du point en fonction du cas
-                //Création des points de la grille
-                //Point = new Vector3(radius * Mathf.Cos((2 * Mathf.PI * i) / numberMeridian), (float)(j * space - space), radius * Mathf.Sin((2 * Mathf.PI * i) / numberMeridian));
+
                 Point = new Vector3(x, y, z);
 
                 //Création vertices a faire
@@ -44,40 +63,29 @@ public class Sphere : MonoBehaviour
                 pointIndex++;
 
                 //Dessin point (optionnel)
-                GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                sphere.transform.position = Point;
-                sphere.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+                DisplayVertices(Point);
             }
         }
+    }
 
-        //Point centre face du haut et du bas cylindre
+    private void CreatePointUpDown(Vector3[] vertices)
+    {
         Vector3 CentreHaut = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y - radius, gameObject.transform.position.z);
-        Vector3 CentreBas = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + radius, gameObject.transform.position.z);
         vertices[numberMeridian * numberParallele] = CentreHaut;
+        DisplayVertices(CentreHaut);
+
+        Vector3 CentreBas = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + radius, gameObject.transform.position.z);
         vertices[numberMeridian * numberParallele + 1] = CentreBas;
-        //Dessin point (optionnel)
-        GameObject sphereHaut = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        sphereHaut.transform.position = CentreHaut;
-        sphereHaut.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-        GameObject sphereBas = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        sphereBas.transform.position = CentreBas;
-        sphereBas.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+        DisplayVertices(CentreBas);
+    }
 
-
-        //DEBUG
-        for (int i = 0; i < vertices.Length; i++)
-        {
-            Debug.Log("Index : " + i + " X : " + vertices[i].x + " Y : " + vertices[i].y + " Z : " + vertices[i].z);
-        }
-
-
-
-        //Création triangles
+    private void DefineTriangles(List<Vector3> triangles)
+    {
         for (int c = 1; c < numberParallele; c++)
         {
             for (int s = 0; s < numberMeridian; s++)
             {
-                if (s == numberMeridian-1)
+                if (s == numberMeridian - 1)
                 {
                     triangles.Add(new Vector3(numberMeridian * c - numberMeridian, numberMeridian * c + s, numberMeridian * c)); //Triangle orienté haut
                     triangles.Add(new Vector3(numberMeridian * c + s, numberMeridian * (c - 1), s + numberMeridian * (c - 1))); //Triangle orienté bas
@@ -89,9 +97,10 @@ public class Sphere : MonoBehaviour
                 }
             }
         }
+    }
 
-
-        //création face du bas et du haut cylindre
+    private void CreateTrianglesUpDown(List<Vector3> triangles, int numberPointsTotal)
+    {
         for (int c = 0; c < numberParallele; c++)
         {
             if (c == 0) //face du bas
@@ -108,7 +117,7 @@ public class Sphere : MonoBehaviour
                     }
                 }
             }
-            else if (c == numberParallele-1) //face du haut
+            else if (c == numberParallele - 1) //face du haut
             {
                 for (int s = numberPointsTotal - numberMeridian - 2; s < numberPointsTotal - 2; s++) //pour chaque point du cercle
                 {
@@ -123,20 +132,25 @@ public class Sphere : MonoBehaviour
                 }
             }
         }
+    }
 
-        Mesh msh = new Mesh();                          
-
-        msh.vertices = vertices;
-
-        //convertion liste de triangles en tableau de triangles
-        int triangleTabSize = triangles.Count * 3;
-        int[] triangleTab = new int[triangleTabSize];
+    private int[] ListTrianglesToArray(List<Vector3> triangles, int[] triangleTab)
+    {
         for (int i = 0; i < triangles.Count; i++)
         {
             triangleTab[i * 3] = (int)triangles[i][0];
             triangleTab[i * 3 + 1] = (int)triangles[i][1];
             triangleTab[i * 3 + 2] = (int)triangles[i][2];
         }
+
+        return triangleTab;
+    }
+
+    private void DisplaySphere(Vector3[] vertices, int[] triangleTab)
+    {
+        Mesh msh = new Mesh();
+
+        msh.vertices = vertices;
 
         msh.triangles = triangleTab;
 
@@ -145,4 +159,10 @@ public class Sphere : MonoBehaviour
         gameObject.GetComponent<MeshRenderer>().material = material;
     }
 
+    private void DisplayVertices(Vector3 vertice)
+    {
+        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        sphere.transform.position = vertice;
+        sphere.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+    }
 }
