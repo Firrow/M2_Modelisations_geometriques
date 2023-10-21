@@ -10,15 +10,12 @@ public class Sphere : MonoBehaviour
     public Material material;
     public double height;
 
-    private int pointIndex;
-
 
     void Start()
     {
         int numberPointsTotal = numberMeridian * numberParallele + 2;
         Vector3[] vertices = new Vector3[numberMeridian * numberParallele + 2];
         List<Vector3> triangles = new List<Vector3>();
-        pointIndex = 0;
 
 
         //création grille (de bas en haut)
@@ -44,6 +41,7 @@ public class Sphere : MonoBehaviour
 
     private void CreateGrid(Vector3[] vertices)
     {
+        int pointIndex = 0;
         Vector3 Point = new Vector3();
         for (int j = 1; j <= numberParallele; j++)
         {
