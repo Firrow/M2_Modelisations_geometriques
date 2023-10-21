@@ -37,22 +37,11 @@ public class Cylinder : MonoBehaviour
         CreateFacesUpDown(triangles, numberPointsTotal);
 
         //convertion liste de triangles en tableau de triangles
-        int triangleTabSize = triangles.Count * 3;
-        int[] triangleTab = new int[triangleTabSize];
-        for (int i = 0; i < triangles.Count; i++)
-        {
-            triangleTab[i * 3] = (int)triangles[i][0];
-            triangleTab[i * 3 + 1] = (int)triangles[i][1];
-            triangleTab[i * 3 + 2] = (int)triangles[i][2];
-        }
+        int[] triangleTab = new int[triangles.Count * 3];
+        triangleTab = ListTrianglesToArray(triangles, triangleTab);
 
-        Mesh msh = new Mesh();
-
-        msh.vertices = vertices;
-        msh.triangles = triangleTab;
-
-        gameObject.GetComponent<MeshFilter>().mesh = msh;           
-        gameObject.GetComponent<MeshRenderer>().material = material;
+        //Affichage
+        Display(vertices, triangleTab);
     }
 
 
@@ -151,5 +140,28 @@ public class Cylinder : MonoBehaviour
                 }
             }
         }
+    }
+
+    private int[] ListTrianglesToArray(List<Vector3> triangles, int[] triangleTab)
+    {
+        for (int i = 0; i < triangles.Count; i++)
+        {
+            triangleTab[i * 3] = (int)triangles[i][0];
+            triangleTab[i * 3 + 1] = (int)triangles[i][1];
+            triangleTab[i * 3 + 2] = (int)triangles[i][2];
+        }
+
+        return triangleTab;
+    }
+
+    private void Display(Vector3[] vertices, int[] triangleTab)
+    {
+        Mesh msh = new Mesh();
+
+        msh.vertices = vertices;
+        msh.triangles = triangleTab;
+
+        gameObject.GetComponent<MeshFilter>().mesh = msh;
+        gameObject.GetComponent<MeshRenderer>().material = material;
     }
 }
