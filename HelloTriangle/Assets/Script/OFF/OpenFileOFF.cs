@@ -4,10 +4,12 @@ using UnityEngine;
 using System.IO;
 using System.Linq;
 using System;
+using System.Globalization;
 
 public class OpenFileOFF : MonoBehaviour
 {
     public string file;
+    public Material material;
 
     private string filePath;
 
@@ -22,6 +24,8 @@ public class OpenFileOFF : MonoBehaviour
         msh.triangles = offReader.getTriangles();
 
         gameObject.GetComponent<MeshFilter>().mesh = msh;
+        gameObject.GetComponent<MeshFilter>().mesh.RecalculateNormals();
+        gameObject.GetComponent<MeshRenderer>().material = material;
     }
 }
 
@@ -55,12 +59,12 @@ class OffReader
         Vector3[] vertices = new Vector3[numberOfVertices];
         for (int i = 0; i < numberOfVertices; i++)
         {
-            float[] vertex = lineTab[i + 2].Split(' ').Select(s => float.Parse(s)).ToArray();
+            float[] vertex = lineTab[i + 2].Split(' ').Select(s => float.Parse(s, CultureInfo.InvariantCulture)).ToArray();
             vertices[i] = new Vector3(vertex[0], vertex[1], vertex[2]);
 
-            GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            /*GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             sphere.transform.position = vertices[i];
-            sphere.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+            sphere.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);*/
         }
         return vertices;
     }
