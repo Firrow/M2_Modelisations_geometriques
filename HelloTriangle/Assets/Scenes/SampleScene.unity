@@ -520,7 +520,7 @@ GameObject:
   - component: {fileID: 1381979992}
   - component: {fileID: 1381979994}
   - component: {fileID: 1381979993}
-  - component: {fileID: 1381979991}
+  - component: {fileID: 1381979995}
   m_Layer: 0
   m_Name: OpenFileOFF
   m_TagString: Untagged
@@ -528,20 +528,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1381979991
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1381979990}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2aa16eb0d5e1224a83a8cd869b01d78, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  file: triceratops.txt
-  material: {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!4 &1381979992
 Transform:
   m_ObjectHideFlags: 0
@@ -607,6 +593,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1381979995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1381979990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8dcb2272cf4db048854ab0a4a4a6e5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  file: cube.txt
 --- !u!1 &2061088255
 GameObject:
   m_ObjectHideFlags: 0
