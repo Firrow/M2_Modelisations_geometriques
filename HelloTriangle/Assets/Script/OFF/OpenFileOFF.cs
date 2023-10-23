@@ -16,7 +16,6 @@ public class OpenFileOFF : MonoBehaviour
     {
         //string separator = Path.DirectorySeparatorChar.ToString();
         filePath = Application.dataPath + "/Files/" + file;
-        Debug.Log(filePath);
         OffReader offReader = new OffReader(filePath);
 
         MyMesh myMesh = new MyMesh(offReader.getVertices(), offReader.getTriangles());
