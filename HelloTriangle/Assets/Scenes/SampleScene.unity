@@ -637,6 +637,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cubeSize: 30
   numberCubeOnEdge: 30
+  operation: intersection
   radiusSphere1: 5
   radiusSphere2: 8
   centerSphere1: {x: -2, y: -2, z: -2}
