@@ -11,20 +11,7 @@ public class VolumesCube : MonoBehaviour
     public int numberSphere;
     public float sizeLitteCube;
 
-    float Xmin = float.PositiveInfinity;
-    float Ymin = float.PositiveInfinity;
-    float Zmin = float.PositiveInfinity;
-    float Xmax = float.NegativeInfinity;
-    float Ymax = float.NegativeInfinity;
-    float Zmax = float.NegativeInfinity;
-
-    private float boundingBoxSizeX;
-    private float boundingBoxSizeY;
-    private float boundingBoxSizeZ;
-
-    private float numberCubeOnEdgeX;
-    private float numberCubeOnEdgeY;
-    private float numberCubeOnEdgeZ;
+    private BoundingBox bd;
 
     void Start()
     {
@@ -43,10 +30,9 @@ public class VolumesCube : MonoBehaviour
         }
 
         //calcul taille du cube total
-        CalculSizeBoundingBox();
+        bd = new BoundingBox(sphereList, sizeLitteCube);
 
-        //Dessiner cubes
-        CreateBoundingBox();
+        CreateCubesInsideBoundingBox();
     }
 
     void Update()
@@ -54,15 +40,29 @@ public class VolumesCube : MonoBehaviour
 
     }
 
-    private void CreateBoundingBox()
+    private void CreateSphere(int numberSphere)
     {
-        for (int i = 0; i < numberCubeOnEdgeX; i++)
+        for (int i = 0; i < numberSphere; i++)
         {
-            for (int j = 0; j < numberCubeOnEdgeY; j++)
+            int radius = UnityEngine.Random.Range(3, 8);
+            int x = UnityEngine.Random.Range(-10, 15);
+            int y = UnityEngine.Random.Range(-10, 15);
+            int z = UnityEngine.Random.Range(-10, 15);
+
+            SphereVolume s = new SphereVolume(radius, new Vector3(x, y, z));
+            sphereList.Add(s);
+        }
+    }
+
+    public void CreateCubesInsideBoundingBox()
+    {
+        for (int i = 0; i < bd.GetnumberCubeOnEdge().x; i++)
+        {
+            for (int j = 0; j < bd.GetnumberCubeOnEdge().y; j++)
             {
-                for (int k = 0; k < numberCubeOnEdgeZ; k++)
+                for (int k = 0; k < bd.GetnumberCubeOnEdge().z; k++)
                 {
-                    Vector3 posPetitCube = new Vector3(((boundingBoxSizeX) / numberCubeOnEdgeX) * i + Xmin, ((boundingBoxSizeY) / numberCubeOnEdgeY) * j + Ymin, ((boundingBoxSizeZ) / numberCubeOnEdgeZ) * k + Zmin);
+                    Vector3 posPetitCube = new Vector3(((bd.GetSizeBoundingBox().x) / bd.GetnumberCubeOnEdge().x) * i + bd.GetXmin(), ((bd.GetSizeBoundingBox().y) / bd.GetnumberCubeOnEdge().y) * j + bd.GetYmin(), ((bd.GetSizeBoundingBox().z) / bd.GetnumberCubeOnEdge().z) * k + bd.GetZmin());
 
                     ChoiceUser(operation, posPetitCube);
                 }
@@ -70,7 +70,17 @@ public class VolumesCube : MonoBehaviour
         }
     }
 
-    private void Intersect(Vector3 posCube) //Vector3 posCube, Vector3 CenterSphere1, Vector3 CenterSphere2, float radiusSphere1, float radiusSphere2
+    private void ChoiceUser(string operation, Vector3 posPetitCube)
+    {
+        if (operation == "intersection")
+            Intersect(posPetitCube);
+        else if (operation == "union")
+            Union(posPetitCube);
+        else
+            DrawCube(posPetitCube);
+    }
+
+    private void Intersect(Vector3 posCube)
     {
         if (IsInsideIntersection(posCube))
         {
@@ -86,17 +96,7 @@ public class VolumesCube : MonoBehaviour
         }
     }
 
-    private void DrawCube(Vector3 posPetitCube)
-    {
-        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        cube.transform.position = posPetitCube;
-        cube.transform.localScale = new Vector3(boundingBoxSizeX / numberCubeOnEdgeX, boundingBoxSizeY / numberCubeOnEdgeY, boundingBoxSizeZ / numberCubeOnEdgeZ);
-    }
-
-
-
-
-    private bool IsInsideIntersection(Vector3 posCube) //Vector3 posCube, Vector3 CenterSphere, float radiusSphere
+    private bool IsInsideIntersection(Vector3 posCube)
     {
         bool[] inside = new bool[this.sphereList.Count];
         for (int i = 0; i < this.sphereList.Count; i++)
@@ -107,7 +107,7 @@ public class VolumesCube : MonoBehaviour
         return inside.All(val => val == true);
     }
 
-    private bool IsInsideUnion(Vector3 posCube) //Vector3 posCube, Vector3 CenterSphere, float radiusSphere
+    private bool IsInsideUnion(Vector3 posCube)
     {
         bool[] inside = new bool[this.sphereList.Count];
         for (int i = 0; i < this.sphereList.Count; i++)
@@ -118,20 +118,41 @@ public class VolumesCube : MonoBehaviour
         return inside.Any(val => val == true);
     }
 
-    private void ChoiceUser(string operation, Vector3 posPetitCube) //string operation, Vector3 posCube, Vector3 CenterSphere1, Vector3 CenterSphere2, float radiusSphere1, float radiusSphere2
+    private void DrawCube(Vector3 posCube)
     {
-        if (operation == "intersection")
-            Intersect(posPetitCube);
-        else if (operation == "union")
-            Union(posPetitCube);
-        else
-            DrawCube(posPetitCube);
+        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.transform.position = posCube;
+        cube.transform.localScale = new Vector3(bd.GetSizeBoundingBox().x / bd.GetnumberCubeOnEdge().x, bd.GetSizeBoundingBox().y / bd.GetnumberCubeOnEdge().y, bd.GetSizeBoundingBox().z / bd.GetnumberCubeOnEdge().z);
     }
 
-    private void CalculSizeBoundingBox()
+}
+
+
+
+
+public class BoundingBox
+{
+    private Vector3 sizeBoundingBox = new Vector3();
+    private Vector3 numberCubeOnEdge = new Vector3();
+
+    private float Xmin = float.PositiveInfinity;
+    private float Ymin = float.PositiveInfinity;
+    private float Zmin = float.PositiveInfinity;
+    private float Xmax = float.NegativeInfinity;
+    private float Ymax = float.NegativeInfinity;
+    private float Zmax = float.NegativeInfinity;
+
+
+    public BoundingBox(List<SphereVolume> listSphere, float sizeLitteCube)
+    {
+        this.sizeBoundingBox = CalculSizeBoundingBox(listSphere);
+        this.numberCubeOnEdge = CalculNumberCube(sizeBoundingBox, sizeLitteCube);
+    }
+
+    public Vector3 CalculSizeBoundingBox(List<SphereVolume> listSphere)
     {
         //calculer la taille de la taille englobante en fonction sphere
-        foreach (var s in this.sphereList)
+        foreach (var s in listSphere)
         {
             Xmin = Math.Min(Xmin, s.centerSphere.x - s.radiusSphere);
             Ymin = Math.Min(Ymin, s.centerSphere.y - s.radiusSphere);
@@ -143,31 +164,58 @@ public class VolumesCube : MonoBehaviour
         }
 
         //calculer taille de chaque côté
-        boundingBoxSizeX = Xmax - Xmin;
-        boundingBoxSizeY = Ymax - Ymin;
-        boundingBoxSizeZ = Zmax - Zmin;
+        float boundingBoxSizeX = Xmax - Xmin;
+        float boundingBoxSizeY = Ymax - Ymin;
+        float boundingBoxSizeZ = Zmax - Zmin;
 
-        //calculer le nombre de petits cubes dans la boite grâce aux valeurs
-
-        numberCubeOnEdgeX = boundingBoxSizeX / sizeLitteCube;
-        numberCubeOnEdgeY = boundingBoxSizeY / sizeLitteCube;
-        numberCubeOnEdgeZ = boundingBoxSizeZ / sizeLitteCube;
-
-        //Debug.Log(numberCubeOnEdgeX + " " + numberCubeOnEdgeY + " " + numberCubeOnEdgeZ);
+        return new Vector3(boundingBoxSizeX, boundingBoxSizeY, boundingBoxSizeZ);
     }
 
-    private void CreateSphere(int numberSphere)
+    public Vector3 CalculNumberCube(Vector3 boundingBoxSize, float sizeLitteCube)
     {
-        for (int i = 0; i < numberSphere; i++)
-        {
-            int radius = UnityEngine.Random.Range(3, 8);
-            int x = UnityEngine.Random.Range(-10, 15);
-            int y = UnityEngine.Random.Range(-10, 15);
-            int z = UnityEngine.Random.Range(-10, 15);
+        //calculer le nombre de petits cubes dans la boite grâce aux valeurs
+        float numberCubeOnEdgeX = boundingBoxSize.x / sizeLitteCube;
+        float numberCubeOnEdgeY = boundingBoxSize.y / sizeLitteCube;
+        float numberCubeOnEdgeZ = boundingBoxSize.z / sizeLitteCube;
 
-            SphereVolume s = new SphereVolume(radius, new Vector3(x, y, z));
-            sphereList.Add(s);
-        }
+        return new Vector3(numberCubeOnEdgeX, numberCubeOnEdgeY, numberCubeOnEdgeZ);
+    }
+
+
+
+
+    public Vector3 GetSizeBoundingBox()
+    {
+        return this.sizeBoundingBox;
+    }
+
+    public Vector3 GetnumberCubeOnEdge()
+    {
+        return this.numberCubeOnEdge;
+    }
+    public float GetXmin()
+    {
+        return this.Xmin;
+    }
+    public float GetXmax()
+    {
+        return this.Xmax;
+    }
+    public float GetYmin()
+    {
+        return this.Ymin;
+    }
+    public float GetYmax()
+    {
+        return this.Ymax;
+    }
+    public float GetZmin()
+    {
+        return this.Zmin;
+    }
+    public float GetZmax()
+    {
+        return this.Zmax;
     }
 }
 
