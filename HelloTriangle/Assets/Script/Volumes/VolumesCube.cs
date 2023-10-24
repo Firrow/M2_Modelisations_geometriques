@@ -8,22 +8,38 @@ public class VolumesCube : MonoBehaviour
 {
     public string operation;
     public List<SphereVolume> sphereList = new List<SphereVolume>();
-    public float boundingBoxSize;
-    public float numberCubeOnEdge;
     public int numberSphere;
+    public float sizeLitteCube;
+
+    float Xmin = float.PositiveInfinity;
+    float Ymin = float.PositiveInfinity;
+    float Zmin = float.PositiveInfinity;
+    float Xmax = float.NegativeInfinity;
+    float Ymax = float.NegativeInfinity;
+    float Zmax = float.NegativeInfinity;
+
+    private float boundingBoxSizeX;
+    private float boundingBoxSizeY;
+    private float boundingBoxSizeZ;
+
+    private float numberCubeOnEdgeX;
+    private float numberCubeOnEdgeY;
+    private float numberCubeOnEdgeZ;
 
     void Start()
     {
-        //Défini spheres
-        for (int i = 0; i < numberSphere; i++)
+        //Défini spheres aléatoirement
+        if (numberSphere != 0)
+            CreateSphere(numberSphere);
+        else
         {
-            int radius = UnityEngine.Random.Range(3, 8);
-            int x = UnityEngine.Random.Range(-10, 15);
-            int y = UnityEngine.Random.Range(-10, 15);
-            int z = UnityEngine.Random.Range(-10, 15);
-            Debug.Log("radius : " + radius + " x : " + x + " y : " + y + " z : " + z);
-            SphereVolume s = new SphereVolume(radius, new Vector3(x, y, z));
-            sphereList.Add(s);
+            //Définir spheres manuellement 
+            SphereVolume s1 = new SphereVolume(4, new Vector3(8, 5, 5));
+            SphereVolume s2 = new SphereVolume(5, new Vector3(10, 1, 5));
+            SphereVolume s3 = new SphereVolume(7, new Vector3(3, 4, 2));
+            sphereList.Add(s1);
+            sphereList.Add(s2);
+            sphereList.Add(s3);
         }
 
         //calcul taille du cube total
@@ -40,13 +56,13 @@ public class VolumesCube : MonoBehaviour
 
     private void CreateBoundingBox()
     {
-        for (int i = 0; i < numberCubeOnEdge; i++)
+        for (int i = 0; i < numberCubeOnEdgeX; i++)
         {
-            for (int j = 0; j < numberCubeOnEdge; j++)
+            for (int j = 0; j < numberCubeOnEdgeY; j++)
             {
-                for (int k = 0; k < numberCubeOnEdge; k++)
+                for (int k = 0; k < numberCubeOnEdgeZ; k++)
                 {
-                    Vector3 posPetitCube = new Vector3(((boundingBoxSize) / numberCubeOnEdge) * i - boundingBoxSize / 2, ((boundingBoxSize) / numberCubeOnEdge) * j - boundingBoxSize / 2, ((boundingBoxSize) / numberCubeOnEdge) * k - boundingBoxSize / 2);
+                    Vector3 posPetitCube = new Vector3(((boundingBoxSizeX) / numberCubeOnEdgeX) * i + Xmin, ((boundingBoxSizeY) / numberCubeOnEdgeY) * j + Ymin, ((boundingBoxSizeZ) / numberCubeOnEdgeZ) * k + Zmin);
 
                     ChoiceUser(operation, posPetitCube);
                 }
@@ -74,7 +90,7 @@ public class VolumesCube : MonoBehaviour
     {
         GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
         cube.transform.position = posPetitCube;
-        cube.transform.localScale = new Vector3(boundingBoxSize / numberCubeOnEdge, boundingBoxSize / numberCubeOnEdge, boundingBoxSize / numberCubeOnEdge);
+        cube.transform.localScale = new Vector3(boundingBoxSizeX / numberCubeOnEdgeX, boundingBoxSizeY / numberCubeOnEdgeY, boundingBoxSizeZ / numberCubeOnEdgeZ);
     }
 
 
@@ -110,18 +126,10 @@ public class VolumesCube : MonoBehaviour
             Union(posPetitCube);
         else
             DrawCube(posPetitCube);
-            //throw new Exception("Opération inconnue du système.");
     }
 
     private void CalculSizeBoundingBox()
     {
-        float Xmin = float.PositiveInfinity;
-        float Ymin = float.PositiveInfinity;
-        float Zmin = float.PositiveInfinity;
-        float Xmax = float.NegativeInfinity;
-        float Ymax = float.NegativeInfinity;
-        float Zmax = float.NegativeInfinity;
-
         //calculer la taille de la taille englobante en fonction sphere
         foreach (var s in this.sphereList)
         {
@@ -134,11 +142,37 @@ public class VolumesCube : MonoBehaviour
             Zmax = Math.Max(Zmax, s.centerSphere.z + s.radiusSphere);
         }
 
-        Debug.Log(Xmin + " " + Ymin + " " + Zmin + " " + Xmax + " " + Ymax + " " + Zmax);
+        //calculer taille de chaque côté
+        boundingBoxSizeX = Xmax - Xmin;
+        boundingBoxSizeY = Ymax - Ymin;
+        boundingBoxSizeZ = Zmax - Zmin;
 
-        //calculer la taille des petits cubes dans la boite grâce aux valeurs
+        //calculer le nombre de petits cubes dans la boite grâce aux valeurs
+
+        numberCubeOnEdgeX = boundingBoxSizeX / sizeLitteCube;
+        numberCubeOnEdgeY = boundingBoxSizeY / sizeLitteCube;
+        numberCubeOnEdgeZ = boundingBoxSizeZ / sizeLitteCube;
+
+        //Debug.Log(numberCubeOnEdgeX + " " + numberCubeOnEdgeY + " " + numberCubeOnEdgeZ);
+    }
+
+    private void CreateSphere(int numberSphere)
+    {
+        for (int i = 0; i < numberSphere; i++)
+        {
+            int radius = UnityEngine.Random.Range(3, 8);
+            int x = UnityEngine.Random.Range(-10, 15);
+            int y = UnityEngine.Random.Range(-10, 15);
+            int z = UnityEngine.Random.Range(-10, 15);
+
+            SphereVolume s = new SphereVolume(radius, new Vector3(x, y, z));
+            sphereList.Add(s);
+        }
     }
 }
+
+
+
 
 public class SphereVolume
 {
