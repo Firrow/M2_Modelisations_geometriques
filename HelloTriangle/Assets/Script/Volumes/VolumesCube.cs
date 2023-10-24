@@ -8,20 +8,28 @@ public class VolumesCube : MonoBehaviour
 {
     public string operation;
     public List<SphereVolume> sphereList = new List<SphereVolume>();
-
     public float boundingBoxSize;
     public float numberCubeOnEdge;
+    public int numberSphere;
 
     void Start()
     {
-        //Dessiner cubes
-        SphereVolume s1 = new SphereVolume(3, new Vector3(6, 5, 5));
-        SphereVolume s2 = new SphereVolume(3, new Vector3(2, 2, 2));
-        SphereVolume s3 = new SphereVolume(3, new Vector3(0, 0, 3));
-        sphereList.Add(s1);
-        sphereList.Add(s2);
-        sphereList.Add(s3);
+        //Défini spheres
+        for (int i = 0; i < numberSphere; i++)
+        {
+            int radius = UnityEngine.Random.Range(3, 8);
+            int x = UnityEngine.Random.Range(-10, 15);
+            int y = UnityEngine.Random.Range(-10, 15);
+            int z = UnityEngine.Random.Range(-10, 15);
+            Debug.Log("radius : " + radius + " x : " + x + " y : " + y + " z : " + z);
+            SphereVolume s = new SphereVolume(radius, new Vector3(x, y, z));
+            sphereList.Add(s);
+        }
 
+        //calcul taille du cube total
+        CalculSizeBoundingBox();
+
+        //Dessiner cubes
         CreateBoundingBox();
     }
 
@@ -107,9 +115,28 @@ public class VolumesCube : MonoBehaviour
 
     private void CalculSizeBoundingBox()
     {
-        //calculer la taille de la taille englobante en fonction sphere
+        float Xmin = float.PositiveInfinity;
+        float Ymin = float.PositiveInfinity;
+        float Zmin = float.PositiveInfinity;
+        float Xmax = float.NegativeInfinity;
+        float Ymax = float.NegativeInfinity;
+        float Zmax = float.NegativeInfinity;
 
-        //calculer la taille des petits cubes dans la boite
+        //calculer la taille de la taille englobante en fonction sphere
+        foreach (var s in this.sphereList)
+        {
+            Xmin = Math.Min(Xmin, s.centerSphere.x - s.radiusSphere);
+            Ymin = Math.Min(Ymin, s.centerSphere.y - s.radiusSphere);
+            Zmin = Math.Min(Zmin, s.centerSphere.z - s.radiusSphere);
+
+            Xmax = Math.Max(Xmax, s.centerSphere.x + s.radiusSphere);
+            Ymax = Math.Max(Ymax, s.centerSphere.y + s.radiusSphere);
+            Zmax = Math.Max(Zmax, s.centerSphere.z + s.radiusSphere);
+        }
+
+        Debug.Log(Xmin + " " + Ymin + " " + Zmin + " " + Xmax + " " + Ymax + " " + Zmax);
+
+        //calculer la taille des petits cubes dans la boite grâce aux valeurs
     }
 }
 

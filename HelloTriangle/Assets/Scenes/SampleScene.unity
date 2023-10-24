@@ -638,6 +638,7 @@ MonoBehaviour:
   operation: union
   boundingBoxSize: 50
   numberCubeOnEdge: 50
+  numberSphere: 4
 --- !u!4 &1656323998
 Transform:
   m_ObjectHideFlags: 0
