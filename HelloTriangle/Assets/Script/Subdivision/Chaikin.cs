@@ -27,6 +27,8 @@ public class Chaikin : MonoBehaviour
         for (int j = 0; j < iterations; j++)
         {
             temp = new List<Vector3>();
+
+            temp.Add(p1);
             for (int i = 0; i < vertices.Count; i++)
             {
                 if (i < vertices.Count - 1)
@@ -35,6 +37,7 @@ public class Chaikin : MonoBehaviour
                     temp.Add(R(vertices[i], vertices[i + 1]));
                 }
             }
+            temp.Add(p4);
             vertices = temp;
         }
 
@@ -42,10 +45,7 @@ public class Chaikin : MonoBehaviour
 
         for (int i = 0; i < vertices.Count; i++)
         {
-            if (i < vertices.Count - 1)
-            {
-                Gizmos.DrawLine(vertices[i], vertices[i + 1]);
-            }
+            Gizmos.DrawLine(vertices[i], vertices[i + 1]);
         }
     }
     private Vector3 Q(Vector3 p1, Vector3 p2)
