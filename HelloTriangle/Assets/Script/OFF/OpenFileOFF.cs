@@ -136,4 +136,8 @@ class MyMesh {
         gravityCenter /= vertices.Length;
         return gravityCenter;
     }
+
+    //calcul normales
+    //writer
+    //calculer nombre sommet, faces, arêtes
 }

@@ -318,6 +318,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &543601664
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 543601666}
+  - component: {fileID: 543601665}
+  m_Layer: 0
+  m_Name: Chaikin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &543601665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 543601664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7396801cae8c87748a61a5d788b40cc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iterations: 0
+--- !u!4 &543601666
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 543601664}
+  serializedVersion: 2
+  m_LocalPosition: {x: -37.264194, y: -15.918429, z: 22.792835}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &954682389
 GameObject:
   m_ObjectHideFlags: 0
@@ -605,7 +649,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8dcb2272cf4db048854ab0a4a4a6e5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  file: cube.txt
+  file: bunny.txt
 --- !u!1 &1656323996
 GameObject:
   m_ObjectHideFlags: 0
@@ -622,7 +666,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1656323997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -635,7 +679,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12a7ae6951876e441bfc7844a8abb6d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  operation: union
+  operation: intersection
   numberSphere: 0
   sizeLitteCube: 0.5
 --- !u!4 &1656323998
@@ -686,7 +730,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberMeridian: 10
   radius: 1
-  numberParallele: 0
+  numberParallele: 5
   material: {fileID: 0}
   height: 3
 --- !u!33 &2061088257
@@ -765,3 +809,4 @@ SceneRoots:
   - {fileID: 1091461147}
   - {fileID: 1381979992}
   - {fileID: 1656323998}
+  - {fileID: 543601666}
