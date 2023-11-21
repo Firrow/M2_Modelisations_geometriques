@@ -1,0 +1,206 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System;
+
+//EXERCICE 2 VOLUME
+
+public class VolumicModel : MonoBehaviour
+{
+    private List<MyCube> myLittleCubeList = new List<MyCube>();
+    public GameObject influenceSphere;
+
+    void Start()
+    {
+        //initialiseCubes();
+    }
+
+    void Update()
+    {
+        foreach (MyCube myCube in myLittleCubeList) {
+            float value = Math.Abs(Vector3.Distance(influenceSphere.transform.position, myCube.getCenter()));
+            myCube.setValue(value);
+            if(myCube.isVisible()) {
+                myCube.show();
+            } else {
+                myCube.hide();
+            }
+        }
+    }
+
+    public void initialiseCubes() {
+
+        float littleCubeRadius = 0.1f;
+
+        List<MathSphere> mathSphereList = new List<MathSphere>();
+        MathSphere mathSphere1 = new MathSphere(new Vector3(0, 0, 0), 1f);
+        MathSphere mathSphere2 = new MathSphere(new Vector3(0.5f, 0.5f, 0.5f), 2f);
+        mathSphereList.Add(mathSphere1);
+        mathSphereList.Add(mathSphere2);
+
+        MyBoundingBox myBoundingBox = new MyBoundingBox(mathSphereList);
+        float xMin = myBoundingBox.getXMin();
+        float xMax = myBoundingBox.getXMax();
+        float yMin = myBoundingBox.getYMin();
+        float yMax = myBoundingBox.getYMax();
+        float zMin = myBoundingBox.getZMin();
+        float zMax = myBoundingBox.getZMax();
+
+        for (float i = xMin + littleCubeRadius; i < xMax; i+=littleCubeRadius*2) {
+            for (float j = yMin + littleCubeRadius; j < yMax; j+=littleCubeRadius*2) {
+                for (float k = zMin + littleCubeRadius; k < zMax; k+=littleCubeRadius*2) {
+                    Vector3 littleCubeCenter = new Vector3(i, j, k);
+                    //if(mathSphere1.isInside(littleCubeCenter)) {
+                    //if(intersection(mathSphere1, mathSphere2, littleCubeCenter)) {
+                    if(union(mathSphere1, mathSphere2, littleCubeCenter)){
+                        float value = Math.Abs(Vector3.Distance(influenceSphere.transform.position, littleCubeCenter));
+                        myLittleCubeList.Add(new MyCube(littleCubeCenter, 2*littleCubeRadius, value));
+                    }
+                }
+            }
+        }
+    }
+
+    public bool intersection(MathSphere sphere1, MathSphere sphere2, Vector3 point) {
+        return sphere1.isInside(point) && sphere2.isInside(point);
+    }
+
+    public bool union(MathSphere sphere1, MathSphere sphere2, Vector3 point) {
+        return sphere1.isInside(point) || sphere2.isInside(point);
+    }
+
+}
+
+public class MathSphere
+{
+    private Vector3 center;
+    private float radius;
+
+    public MathSphere(Vector3 center, float radius)
+    {
+        this.center = center;
+        this.radius = radius;
+    }
+
+    public Vector3 getCenter()
+    {
+        return center;
+    }
+
+    public float getRadius()
+    {
+        return radius;
+    }
+
+    public bool isInside(Vector3 point)
+    {
+        return (point.x-center.x)*(point.x-center.x) + (point.y-center.y)*(point.y-center.y) + (point.z-center.z)*(point.z-center.z) - radius*radius < 0;
+    }
+}
+
+public class MyBoundingBox {
+
+    private List<MathSphere> mathSphereList;
+    private float xMin;
+    private float xMax;
+    private float yMin;
+    private float yMax;
+    private float zMin;
+    private float zMax;
+
+
+    public MyBoundingBox(List<MathSphere> mathSphereList) {
+        this.mathSphereList = mathSphereList;
+        this.xMin = float.PositiveInfinity;
+        this.xMax = float.NegativeInfinity;
+        this.yMin = float.PositiveInfinity;
+        this.yMax = float.NegativeInfinity;
+        this.zMin = float.PositiveInfinity;
+        this.zMax = float.NegativeInfinity;
+
+        init();
+    }
+
+    private void init() {
+        foreach (MathSphere mathSphere in mathSphereList) {
+            xMin = Mathf.Min(xMin, mathSphere.getCenter().x - mathSphere.getRadius());
+            xMax = Mathf.Max(xMax, mathSphere.getCenter().x + mathSphere.getRadius());
+            yMin = Mathf.Min(yMin, mathSphere.getCenter().y - mathSphere.getRadius());
+            yMax = Mathf.Max(yMax, mathSphere.getCenter().y + mathSphere.getRadius());
+            zMin = Mathf.Min(zMin, mathSphere.getCenter().z - mathSphere.getRadius());
+            zMax = Mathf.Max(zMax, mathSphere.getCenter().z + mathSphere.getRadius());
+        }
+    }
+
+    public float getXMin() {
+        return xMin;
+    }
+
+    public float getXMax() {
+        return xMax;
+    }
+
+    public float getYMin() {
+        return yMin;
+    }
+
+    public float getYMax() {
+        return yMax;
+    }
+
+    public float getZMin() {
+        return zMin;
+    }
+
+    public float getZMax() {
+        return zMax;
+    }
+}
+
+public class MyCube {
+    private Vector3 center;
+    private float radius;
+    private float value;
+
+    private GameObject cube;
+
+    public MyCube(Vector3 center, float radius, float value) {
+        this.center = center;
+        this.radius = radius;
+        this.value = value;
+
+        this.cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        this.cube.transform.position = center;
+        this.cube.transform.localScale = new Vector3(radius, radius, radius);
+        this.cube.GetComponent<Renderer>().material.color = Color.white;
+    }
+
+    public Vector3 getCenter() {
+        return center;
+    }
+
+    public float getRadius() {
+        return radius;
+    }
+
+    public float getValue() {
+        return value;
+    }
+
+    public void show() {
+        cube.SetActive(true);
+    }
+
+    public void hide() {
+        cube.SetActive(false);
+    }
+
+    public bool isVisible() {
+        return value > 1.2f;
+    }
+
+    public void setValue(float value) {
+        this.value = value;
+    }
+
+}

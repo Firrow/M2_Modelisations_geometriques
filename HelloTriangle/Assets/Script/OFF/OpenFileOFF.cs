@@ -137,6 +137,7 @@ class MyMesh {
         return gravityCenter;
     }
 
+    //Pas obligé de le faire
     //calcul normales
     //writer
     //calculer nombre sommet, faces, arêtes
