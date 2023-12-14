@@ -15,6 +15,7 @@ public class Chaikin : MonoBehaviour
         Vector3 p3 = new Vector3(2, 1, 0);
         Vector3 p4 = new Vector3(3, 0, 0);
 
+
         List<Vector3> vertices = new List<Vector3>();
 
         vertices.Add(p1);

@@ -26,8 +26,8 @@ public class HermiteCurves : MonoBehaviour
         for (float t = 0; t <= 1; t += 0.01f)
         {
             //formule ne fonctionne pas ? (diapo "Cubique d'Hermite")
-            _gizmosPosition = (2 * Mathf.Pow(2 * t, 3) - 3 * Mathf.Pow(t, 2) + 1) * _controlPoints[0].position
-                            + (-2 * Mathf.Pow(t, 3) - 3 * Mathf.Pow(t, 2)) * _controlPoints[1].position
+            _gizmosPosition = (2 * Mathf.Pow(t, 3) - 3 * Mathf.Pow(t, 2) + 1) * _controlPoints[0].position
+                            + (-2 * Mathf.Pow(t, 3) + 3 * Mathf.Pow(t, 2)) * _controlPoints[1].position
                             + (Mathf.Pow(t, 3) - 2 * Mathf.Pow(t, 2) + t) * _vectorPoints[0]
                             + (Mathf.Pow(t, 3) - Mathf.Pow(t, 2)) * _vectorPoints[1];
 
